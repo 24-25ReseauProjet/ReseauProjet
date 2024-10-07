@@ -18,7 +18,7 @@ public class GameServer {
             threadPool = Executors.newFixedThreadPool(MAX_CLIENTS);
             compt = new Compt(size);
             secretNumber = generateSecretNumber();
-            System.out.println("Server started on port " + PORT);
+            System.out.println("Server started on port 12345" + PORT);
         } catch (Exception e) {
             e.printStackTrace();
         }
