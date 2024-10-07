@@ -55,7 +55,7 @@ public class GameServer {
         try {
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("New client connected: " + clientSocket.getInetAddress());
+                System.out.println("New client connected:: " + clientSocket.getInetAddress());
                 ClientThread clientThread = new ClientThread("ClientThread", clientSocket, compt, this);
                 threadPool.execute(clientThread);
             }
