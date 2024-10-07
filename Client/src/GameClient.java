@@ -29,20 +29,15 @@ public class GameClient {
             String response;
             while ((response = in.readLine()) != null) {
                 System.out.println(response);
-                if (response.contains("Game over")) {
+                if (response.contains("Congratulations")) {
                     break;
                 }
-                System.out.print("Enter an index to remove: ");
+                System.out.print("Enter your guess (format: <index><character>): ");
                 String userInput = scanner.nextLine();
                 out.println(userInput);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        GameClient client = new GameClient();
-        client.start();
     }
 }

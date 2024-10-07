@@ -6,11 +6,13 @@ import java.net.Socket;
 
 public class ClientThread implements Runnable {
     private Socket socket;
-    private Compt compt;
+    private String secretWord;
+    private char[] currentGuess;
 
-    public ClientThread(Socket socket, Compt compt) {
+    public ClientThread(Socket socket, String secretWord, char[] currentGuess) {
         this.socket = socket;
-        this.compt = compt;
+        this.secretWord = secretWord;
+        this.currentGuess = currentGuess;
     }
 
     @Override
@@ -19,20 +21,24 @@ public class ClientThread implements Runnable {
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         ) {
-            out.println("Welcome to Jeu de perdu!");
-            out.println("Current game state: " + compt);
+            out.println("Welcome to the word guessing game!");
+            out.println("The word to guess: " + new String(currentGuess));
             String input;
             while ((input = in.readLine()) != null) {
-                // Game logic for removing elements and losing condition
-                int index = Integer.parseInt(input);
-                if (index >= 0 && index < compt.t.length && compt.t[index] != -1) {
-                    compt.t[index] = -1; // Mark the element as removed
-                    out.println("Element removed. Current game state: " + compt);
+                if (input.length() == 2 && input.charAt(0) >= '0' && input.charAt(0) <= '9') {
+                    int index = Character.getNumericValue(input.charAt(0));
+                    char guessedChar = input.charAt(1);
+                    if (index >= 0 && index < secretWord.length() && secretWord.charAt(index) == guessedChar) {
+                        currentGuess[index] = guessedChar;
+                        out.println("Correct guess! Current word state: " + new String(currentGuess));
+                    } else {
+                        out.println("Incorrect guess or invalid index. Try again.");
+                    }
                 } else {
-                    out.println("Invalid move. Try again.");
+                    out.println("Invalid input format. Please enter in the format: <index><character> (e.g., 2A)");
                 }
                 if (isGameOver()) {
-                    out.println("Game over! You lost.");
+                    out.println("Congratulations! You guessed the word: " + secretWord);
                     break;
                 }
             }
@@ -42,12 +48,11 @@ public class ClientThread implements Runnable {
     }
 
     private boolean isGameOver() {
-        int count = 0;
-        for (int value : compt.t) {
-            if (value != -1) {
-                count++;
+        for (char c : currentGuess) {
+            if (c == 'X') {
+                return false;
             }
         }
-        return count <= 1; // Game is over when only one element is left
+        return true;
     }
 }
