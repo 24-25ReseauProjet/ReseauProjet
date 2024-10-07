@@ -1,3 +1,4 @@
+// GameClient.java
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -25,30 +26,23 @@ public class GameClient {
 
     public void start() {
         try {
-            String serverResponse;
-            while ((serverResponse = in.readLine()) != null) {
-                System.out.println("Server: " + serverResponse);
-                if (serverResponse.equalsIgnoreCase("Goodbye!") || serverResponse.contains("Congratulations")) {
+            String response;
+            while ((response = in.readLine()) != null) {
+                System.out.println(response);
+                if (response.contains("Game over")) {
                     break;
                 }
-                System.out.print("You: ");
+                System.out.print("Enter an index to remove: ");
                 String userInput = scanner.nextLine();
                 out.println(userInput);
-                if (userInput.equalsIgnoreCase("EXIT")) {
-                    break;
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                socket.close();
-                scanner.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
-
+    public static void main(String[] args) {
+        GameClient client = new GameClient();
+        client.start();
+    }
 }

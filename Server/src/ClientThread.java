@@ -1,60 +1,53 @@
+// ClientThread.java
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.IOException;
 import java.net.Socket;
 
-
-class ClientThread extends Thread {
-    private Socket clientSocket;
-    private BufferedReader in;
-    private PrintWriter out;
+public class ClientThread implements Runnable {
+    private Socket socket;
     private Compt compt;
-    private GameServer server;
 
-    public ClientThread(String name, Socket clientSocket, Compt compt, GameServer server) {
-        super(name);
-        this.clientSocket = clientSocket;
+    public ClientThread(Socket socket, Compt compt) {
+        this.socket = socket;
         this.compt = compt;
-        this.server = server;
-        try {
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
+    }
+
+    @Override
+    public void run() {
+        try (
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        ) {
+            out.println("Welcome to Jeu de perdu!");
+            out.println("Current game state: " + compt);
+            String input;
+            while ((input = in.readLine()) != null) {
+                // Game logic for removing elements and losing condition
+                int index = Integer.parseInt(input);
+                if (index >= 0 && index < compt.t.length && compt.t[index] != -1) {
+                    compt.t[index] = -1; // Mark the element as removed
+                    out.println("Element removed. Current game state: " + compt);
+                } else {
+                    out.println("Invalid move. Try again.");
+                }
+                if (isGameOver()) {
+                    out.println("Game over! You lost.");
+                    break;
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void run() {
-        try {
-            out.println("Welcome to the Hangman game! Try to guess the 4-digit number.");
-            String clientMessage;
-            while ((clientMessage = in.readLine()) != null) {
-                if (clientMessage.equalsIgnoreCase("EXIT")) {
-                    out.println("Goodbye!");
-                    break;
-                }
-
-                if (clientMessage.matches("\\d{4}")) {
-                    String result = server.evaluateGuess(clientMessage);
-                    out.println("Result: " + result);
-                    if (result.equals("4A0B")) {
-                        out.println("Congratulations! You've guessed the correct number!");
-                        break;
-                    }
-                } else {
-                    out.println("Invalid input. Please enter a 4-digit number.");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                clientSocket.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+    private boolean isGameOver() {
+        int count = 0;
+        for (int value : compt.t) {
+            if (value != -1) {
+                count++;
             }
         }
+        return count <= 1; // Game is over when only one element is left
     }
 }

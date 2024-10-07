@@ -1,6 +1,6 @@
+// Compt.java
 public class Compt {
     public int[] t;
-    public int tempo;
 
     public Compt(int size) {
         t = new int[size];
@@ -11,10 +11,12 @@ public class Compt {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Compt state : ");
+        StringBuilder sb = new StringBuilder("Compt state: ");
         for (int value : t) {
-            sb.append(value).append(" ");
+            if (value != -1) {
+                sb.append(value).append(" ");
+            }
         }
         return sb.toString();
     }
-}
+} 
