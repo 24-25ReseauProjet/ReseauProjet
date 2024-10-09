@@ -1,58 +1,57 @@
-// ClientThread.java
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ClientThread implements Runnable {
-    private Socket socket;
-    private String secretWord;
-    private char[] currentGuess;
+public class ClientThread extends Thread{
 
-    public ClientThread(Socket socket, String secretWord, char[] currentGuess) {
-        this.socket = socket;
-        this.secretWord = secretWord;
-        this.currentGuess = currentGuess;
+    private Socket clientSocket;//客户端连接的Socket对象
+    private BufferedReader in;//向客户端读取数据
+    private PrintWriter out;//向客户端发送数据
+    private Game game;//游戏逻辑对象，管理客户端的游戏状态
+
+    public ClientThread(Socket clientSocket,Game game){
+        this.clientSocket = clientSocket;
+        this.game = game;
     }
 
-    @Override
-    public void run() {
-        try (
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-        ) {
-            out.println("Welcome to the word guessing game!");
-            out.println("The word to guess: " + new String(currentGuess));
-            String input;
-            while ((input = in.readLine()) != null) {
-                if (input.length() == 2 && input.charAt(0) >= '0' && input.charAt(0) <= '9') {
-                    int index = Character.getNumericValue(input.charAt(0));
-                    char guessedChar = input.charAt(1);
-                    if (index >= 0 && index < secretWord.length() && secretWord.charAt(index) == guessedChar) {
-                        currentGuess[index] = guessedChar;
-                        out.println("Correct guess! Current word state: " + new String(currentGuess));
-                    } else {
-                        out.println("Incorrect guess or invalid index. Try again.");
-                    }
-                } else {
-                    out.println("Invalid input format. Please enter in the format: <index><character> (e.g., 2A)");
-                }
-                if (isGameOver()) {
-                    out.println("Congratulations! You guessed the word: " + secretWord);
+    //线程的主逻辑部分，线程启动时会自动执行run中的代码
+    public void run(){
+        try{
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            out = new PrintWriter(clientSocket.getOutputStream(),true);
+
+            //out.println("Welcome to the game !");
+
+            String clientInput;
+            //一直监听用户的消息，直到游戏结束
+            while((clientInput = in.readLine())!=null) {
+                System.out.println("Received from client 调试信息 "+clientInput);
+                String response = game.processInput(clientInput);
+                System.out.println("Sending response to client : "+response);
+                out.println(response);
+
+                if (game.isGameOver()) {
+                    //同样的问题需要调试，就是getline一次只能返回一行内容，也就是说一次通信只能通信一行，需要修改
+                    out.println("GAME_OVER");
+                    out.println("Game over! Thanks for your playing! ");
                     break;
                 }
+
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }catch (IOException e){
+            System.out.println("Error in client communication : "+e.getMessage());
+        }finally {
+            //像大二system一样，如果进程没有被关掉就关掉他们
+            try {
+                if(in!=null) in.close();
+                if(out!=null) out.close();
+                if(clientSocket!=null&&!clientSocket.isClosed()) clientSocket.close();
+            }catch (IOException e){
+                System.out.println("Error closing threads : " + e.getMessage());
+            }
         }
     }
 
-    private boolean isGameOver() {
-        for (char c : currentGuess) {
-            if (c == 'X') {
-                return false;
-            }
-        }
-        return true;
-    }
 }

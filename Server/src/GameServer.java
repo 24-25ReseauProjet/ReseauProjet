@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Random;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,37 +11,35 @@ public class GameServer {
     private static final int PORT = 12345;
     private static final int MAX_CLIENTS = 10;
     private ServerSocket serverSocket;
-    private ExecutorService threadPool;
-    private String secretWord;
-    private char[] currentGuess;
-    private static final List<String> WORD_LIST = Arrays.asList("APPLE", "BANANA", "CHERRY", "ORANGE", "GRAPE");
+    //private ExecutorService threadPool;
 
-    public GameServer() {
-        try {
+    public GameServer(){
+        try{
             serverSocket = new ServerSocket(PORT);
-            threadPool = Executors.newFixedThreadPool(MAX_CLIENTS);
-            generateSecretWord();
-            System.out.println("Game Server started. Waiting for clients...");
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Game start listening on port : " + PORT);
+        }catch (IOException e){
+            System.out.println("Error initializing server : " + e.getMessage());
         }
     }
 
-    private void generateSecretWord() {
-        Random random = new Random();
-        secretWord = WORD_LIST.get(random.nextInt(WORD_LIST.size()));
-        currentGuess = new char[secretWord.length()];
-        Arrays.fill(currentGuess, 'X');
-    }
-
-    public void start() {
-        try {
-            while (true) {
+    public void start(){
+        while(true) {
+            try {
+                //accept保持阻塞状态，直到有客户连接
                 Socket clientSocket = serverSocket.accept();
-                threadPool.execute(new ClientThread(clientSocket, secretWord, currentGuess));
+                System.out.println("New client connected : "+ clientSocket.getInetAddress());
+                //这里是给用户猜测的单词，后面要改成随机分配的
+                Game game = new Game("pineapple");
+
+                ClientThread clientThread = new ClientThread(clientSocket,game);
+                clientThread.start();
+
+            }catch (IOException e){
+                System.out.println("Error accepting client connection : "+e.getMessage());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
         }
     }
+
+
 }

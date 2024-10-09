@@ -1,4 +1,4 @@
-// Compt.java
+//暂时没用处，之后可以用作共享资源或者排行榜，可以追踪连接到服务器的客户数量
 public class Compt {
     public int[] t;
 
