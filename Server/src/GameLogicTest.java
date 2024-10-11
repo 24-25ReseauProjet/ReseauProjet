@@ -11,7 +11,7 @@ public class GameLogicTest {
         System.out.println(game.processInput("n"));
         System.out.println(game.processInput("z"));
 
-        // 检查游戏状态
+        // 检查游戏状态111
         if (game.isGameOver()) {
             System.out.println("Game Over!");
         } else {
