@@ -25,8 +25,13 @@ public class Client {
             while (true){
                 String serverResponse = serverConnection.receiveFromServer();
 
-                if(serverResponse.equals("GAME_OVER")){
-                    System.out.println("Game ended. Exiting now. ");
+                if(serverResponse.equals("success")){
+                    System.out.println("Your are successed!Congratuations! ");
+                    break;
+                }
+
+                if(serverResponse.equals("lose")){
+                    System.out.println("Your are lose! Try again if you want.");
                     break;
                 }
 

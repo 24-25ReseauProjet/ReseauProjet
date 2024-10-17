@@ -42,8 +42,12 @@ public class Game {
     }
 
     //获取游戏状态
-    public boolean isGameOver(){
-        return remainingGuesses==0||gameWon;
+    public boolean isGameOverWin(){
+        return gameWon;
+    }
+
+    public boolean isGameLose(){
+        return this.remainingGuesses==0;
     }
 
     //判断是否胜利

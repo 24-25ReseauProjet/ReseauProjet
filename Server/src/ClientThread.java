@@ -24,15 +24,18 @@ public class ClientThread extends Thread{
 
             out.println("Welcome to the game");
 
-
             String clientInput;
             //一直监听用户的消息，直到游戏结束
             while((clientInput = in.readLine())!=null) {
                 String response = game.processInput(clientInput);
-                if (game.isGameOver()) {
-                    //同样的问题需要调试，就是getline一次只能返回一行内容，也就是说一次通信只能通信一行，需要修改
-                    out.println("GAME_OVER");
+                if (game.isGameOverWin()) {
+                    //同样的问题需要调试，就是get line一次只能返回一行内容，也就是说一次通信只能通信一行，需要修改
+                    out.println("success");
                     break;
+                }
+
+                if(game.isGameLose()){
+                    out.println("lose");
                 }
                 out.println(response);
             }
