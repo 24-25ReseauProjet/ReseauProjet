@@ -13,6 +13,7 @@ public class Game {
     }
 
     public String processInput(String input){
+        //如果用户输入的不是一个字母，输出下列文字
         if(input==null||input.length()!=1){
             return "Enter one letter please : ";
         }

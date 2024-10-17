@@ -30,7 +30,6 @@ public class GameServer {
                 System.out.println("New client connected : "+ clientSocket.getInetAddress());
                 //这里是给用户猜测的单词，后面要改成随机分配的
                 Game game = new Game("pineapple");
-
                 ClientThread clientThread = new ClientThread(clientSocket,game);
                 clientThread.start();
 
