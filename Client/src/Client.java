@@ -131,7 +131,11 @@ public class Client {
 
                 serverConnection.sendToServer(userInput);
             }
-
+            try {
+                Thread.sleep(50); // 暂停50ms
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
             // 关闭游戏连接
             serverConnection.close();
         }
@@ -147,4 +151,5 @@ public class Client {
 
         System.out.println("Client resources released.");
     }
+
 }
