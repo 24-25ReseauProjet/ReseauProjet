@@ -1,41 +1,73 @@
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AuthServer {
-    private static final int AUTH_PORT = 12346;
+    private static final int PORT = 54321;
+    private static final int BUFFER_SIZE = 1024;
+    private DatagramSocket serverSocket;
+    // 共享的已认证用户表
+    private static ConcurrentHashMap<String, Boolean> authenticatedUsers = new ConcurrentHashMap<>();
 
-    public static void main(String[] args) {
-        try (DatagramSocket socket = new DatagramSocket(AUTH_PORT)) {
-            System.out.println("Authentication server is listening on port " + AUTH_PORT);
+    public AuthServer() {
+        try {
+            serverSocket = new DatagramSocket(PORT);
+            System.out.println("Auth server is listening on port: " + PORT);
+        } catch (IOException e) {
+            System.out.println("Error initializing auth server: " + e.getMessage());
+        }
+    }
 
-            while (true) {
-                byte[] buffer = new byte[1024];
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                socket.receive(packet);
+    public void start() {
+        byte[] receiveBuffer = new byte[BUFFER_SIZE];
 
-                String received = new String(packet.getData(), 0, packet.getLength());
-                System.out.println("Received authentication request: " + received);
+        while (true) {
+            try {
+                DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
+                serverSocket.receive(receivePacket);
+                String clientMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
+                InetAddress clientAddress = receivePacket.getAddress();
+                int clientPort = receivePacket.getPort();
 
-                // Example simple validation (username: user1, password: password1)
-                String responseMessage;
-                if ("user1:password1".equals(received)) {
-                    responseMessage = "Authentication successful";
-                } else {
-                    responseMessage = "Authentication failed";
-                }
+                System.out.println("Received authentication request from " + clientAddress + ":" + clientPort);
 
+                String responseMessage = authenticate(clientMessage);
                 byte[] responseBuffer = responseMessage.getBytes();
-                InetAddress clientAddress = packet.getAddress();
-                int clientPort = packet.getPort();
-
                 DatagramPacket responsePacket = new DatagramPacket(responseBuffer, responseBuffer.length, clientAddress, clientPort);
-                socket.send(responsePacket);
+                serverSocket.send(responsePacket);
 
                 System.out.println("Sent authentication response: " + responseMessage);
+
+            } catch (IOException e) {
+                System.out.println("Error handling client authentication request: " + e.getMessage());
             }
-        } catch (Exception e) {
-            System.err.println("Error in authentication server: " + e.getMessage());
         }
+    }
+
+    private String authenticate(String message) {
+        if (message.startsWith("AUTH:")) {
+            String[] parts = message.split(":");
+            if (parts.length == 3) {
+                String username = parts[1];
+                String password = parts[2];
+                if (isValidUser(username, password)) {
+                    authenticatedUsers.put(username, true);
+                    return "Authentication successful";
+                } else {
+                    return "Authentication failed";
+                }
+            }
+        }
+        return "Invalid authentication request format";
+    }
+
+    private boolean isValidUser(String username, String password) {
+        return "user".equals(username) && "password123".equals(password);
+    }
+
+    public static boolean isAuthenticated(String username) {
+        return authenticatedUsers.getOrDefault(username, false);
     }
 }
