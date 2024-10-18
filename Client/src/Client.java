@@ -42,8 +42,7 @@ public class Client {
 
     private boolean authenticateWithUDP() {
         while (true) {
-            System.out.print("Enter username (or type 'exit' to quit): ");
-            username = userInputHandler.getUserInput(); // 获取用户名并存储到类的成员变量
+            username = userInputHandler.getUserInput("Enter username (or type 'exit' to quit): ");
 
             if (username.equalsIgnoreCase("exit")) {
                 System.out.println("Exiting client...");
