@@ -2,15 +2,17 @@ import java.util.Scanner;
 
 public class UserInputHandler {
     private Scanner scanner;
+    private UI ui;
 
-    public  UserInputHandler(){
+    public  UserInputHandler(UI ui){
+        this.ui = ui;
         this.scanner = new Scanner(System.in);
     }
 
     //处理用户输入的主方法
-    public String getUserInput(){
-        System.out.println("Please enter a letter : ");
-        return scanner.nextLine().trim();//获取用户输入并去除先后空格
+    public String getUserInput() {
+        ui.appendToOutput("Please enter a letter: ");
+        return ui.waitForUserInput(); // 等待图形界面用户输入
     }
 
     public void close(){
