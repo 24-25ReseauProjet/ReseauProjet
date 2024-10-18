@@ -13,6 +13,7 @@ public class Game {
     }
 
     public String processInput(String input){
+        //如果用户输入的不是一个字母，输出下列文字
         if(input==null||input.length()!=1){
             return "Enter one letter please : ";
         }
@@ -41,8 +42,12 @@ public class Game {
     }
 
     //获取游戏状态
-    public boolean isGameOver(){
-        return remainingGuesses==0||gameWon;
+    public boolean isGameOverWin(){
+        return gameWon;
+    }
+
+    public boolean isGameLose(){
+        return this.remainingGuesses==0;
     }
 
     //判断是否胜利

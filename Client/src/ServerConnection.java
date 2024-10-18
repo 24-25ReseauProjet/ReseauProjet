@@ -26,7 +26,7 @@ public class ServerConnection {
             System.out.println("ERROR OUTPUT ");
         }
     }
-
+    //目前为止还是仅仅接收server的一行消息
     public String receiveFromServer(){
         try{
             if(in!=null){
