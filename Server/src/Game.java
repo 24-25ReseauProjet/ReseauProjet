@@ -30,14 +30,15 @@ public class Game {
         }
 
         if(foundMatch){
-            //为了在猜到了之后不再返回一遍enter one letter
-            if(isWon()){
-                return "BIEN JOUE VOUS AVEZ TROUVE LA REPONSE : "+ currentGuess.toString();
+            if(currentGuess.toString().equals(wordToGuess)){
+                gameWon=true;
+                return "success";
+            }else {
+                return "Good guess! Current state : " + currentGuess.toString() + ". Remaining times : " + remainingGuesses;
             }
-            return "Good guess! Current state : "+ currentGuess.toString()+". Remaining times : "+ remainingGuesses;
-        }else{
-            remainingGuesses-=1;
-            return "Sorry, that letter isn't in the word. Current state : "+currentGuess.toString()+". Remaining times : "+ remainingGuesses;
+            }else{
+                remainingGuesses-=1;
+                return "Sorry, that letter isn't in the word. Current state : "+currentGuess.toString()+". Remaining times : "+ remainingGuesses;
         }
     }
 

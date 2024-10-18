@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerConnection {
     private Socket socket;
@@ -26,16 +28,20 @@ public class ServerConnection {
             System.out.println("ERROR OUTPUT ");
         }
     }
-    //目前为止还是仅仅接收server的一行消息
-    public String receiveFromServer(){
-        try{
-            if(in!=null){
-                return in.readLine();
+
+    public List<String> receiveAllMessages(){
+        List<String> messages = new ArrayList<>();
+        try {
+            while (in.ready()) {  // 当有数据时才读取
+                String message = in.readLine();
+                if (message != null) {
+                    messages.add(message);
+                }
             }
-        }catch (IOException e){
-            System.out.println("ERROR RECEIVE DATA ");
+        } catch (IOException e) {
+            System.out.println("Error in receive all the messages from server. ");
         }
-        return null;
+        return messages;
     }
 
     public void close(){
