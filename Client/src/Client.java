@@ -10,6 +10,7 @@ public class Client {
     public Client(){
         try{
             Socket socket = new Socket(Server_Address,Server_Port);
+            socket.setSoTimeout(3000);
             System.out.println("SUCCESS CONNECTION "+Server_Address+" : "+Server_Port);
 
             serverConnection = new ServerConnection(socket);
@@ -47,8 +48,6 @@ public class Client {
                 }
                 //调用serverconnection类的向server发送来发送信息到服务器
                 serverConnection.sendToServer(userInput);
-
-
             }
             serverConnection.close();
             userInputHandler.close();
