@@ -1,11 +1,13 @@
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 
 public class Client {
     private static final  String Server_Address = "127.0.0.1";
     private static final int Server_Port = 12345;
     private ServerConnection serverConnection;
     private UserInputHandler userInputHandler;
+
 
     public Client(){
         try{
@@ -22,36 +24,45 @@ public class Client {
     }
 
     public void start(){
-        if(serverConnection!=null&&userInputHandler!=null){
             while (true){
-                String serverResponse = serverConnection.receiveFromServer();
-
-                if(serverResponse.equals("success")){
-                    System.out.println("Your are successed!Congratuations! ");
+                boolean endTheGame=false;
+                List<String> serverResponses = serverConnection.receiveAllMessages();
+                for(String response : serverResponses) {
+                    if (response.equals("success")) {
+                        System.out.println("Your are successed!Congratuations! ");
+                        endTheGame=true;
+                        break;
+                    }else if (response.equals("lose")) {
+                        System.out.println("Your are lose! Try again if you want.");
+                        endTheGame=true;
+                        break;
+                    }else if (response != null) {
+                        System.out.println("Server : " + response);
+                    }
+                }
+                if (endTheGame) {
                     break;
                 }
+                    //调用userinputhandler的获取用户输入来获得这个字符
+                    String userInput = userInputHandler.getUserInput();
+                    //检测用户是否输入exit,如果输入了这个单词传过来，游戏将直接结束
+                    if (userInput.equalsIgnoreCase("exit")) {
+                        System.out.println("exiting game ");
+                        break;
+                    }
+                    //调用serverconnection类的向server发送来发送信息到服务器
+                    serverConnection.sendToServer(userInput);
 
-                if(serverResponse.equals("lose")){
-                    System.out.println("Your are lose! Try again if you want.");
-                    break;
+                try {
+                    Thread.sleep(50); // 暂停50ms
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
 
-                if(serverResponse!=null){
-                    System.out.println("Server : "+ serverResponse);
-                }
-                //调用userinputhandler的获取用户输入来获得这个字符
-                String userInput = userInputHandler.getUserInput();
-                //检测用户是否输入exit,如果输入了这个单词传过来，游戏将直接结束
-                if(userInput.equalsIgnoreCase("exit")){
-                    System.out.println("exiting game ");
-                    break;
-                }
-                //调用serverconnection类的向server发送来发送信息到服务器
-                serverConnection.sendToServer(userInput);
             }
             serverConnection.close();
             userInputHandler.close();
-        }
+
     }
 
 }
