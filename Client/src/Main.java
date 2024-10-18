@@ -1,6 +1,9 @@
 public class Main {
     public static void main(String[] args) {
-    Client client = new Client();
-    client.start();
+        UI ui = new UI();
+        ui.BuildANewUi();
+
+        //Client client = new Client();
+        //client.start();
     }
 }

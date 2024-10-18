@@ -7,19 +7,22 @@ public class Client {
     private static final int Server_Port = 12345;
     private ServerConnection serverConnection;
     private UserInputHandler userInputHandler;
+    private UI ui;
 
 
-    public Client(){
+    public Client(UI ui){
         try{
             Socket socket = new Socket(Server_Address,Server_Port);
             socket.setSoTimeout(3000);
-            System.out.println("SUCCESS CONNECTION "+Server_Address+" : "+Server_Port);
+            //System.out.println("SUCCESS CONNECTION "+Server_Address+" : "+Server_Port);
+            this.ui=ui;
+            ui.appendToOutput("SUCCESS CONNECTION " + Server_Address + " : " + Server_Port);
 
             serverConnection = new ServerConnection(socket);
-            userInputHandler = new UserInputHandler();
+            userInputHandler = new UserInputHandler(ui);
 
         }catch (IOException e){
-            System.out.println("error connection "+e.getMessage());
+            ui.appendToOutput("Error connection: " + e.getMessage());
         }
     }
 
@@ -29,15 +32,15 @@ public class Client {
                 List<String> serverResponses = serverConnection.receiveAllMessages();
                 for(String response : serverResponses) {
                     if (response.equals("success")) {
-                        System.out.println("Your are successed!Congratuations! ");
+                        ui.appendToOutput("You are successful! Congratulations!");
                         endTheGame=true;
                         break;
                     }else if (response.equals("lose")) {
-                        System.out.println("Your are lose! Try again if you want.");
+                        ui.appendToOutput("You lost! Try again if you want.");
                         endTheGame=true;
                         break;
                     }else if (response != null) {
-                        System.out.println("Server : " + response);
+                        ui.appendToOutput("Server: " + response);
                     }
                 }
                 if (endTheGame) {
@@ -47,7 +50,7 @@ public class Client {
                     String userInput = userInputHandler.getUserInput();
                     //检测用户是否输入exit,如果输入了这个单词传过来，游戏将直接结束
                     if (userInput.equalsIgnoreCase("exit")) {
-                        System.out.println("exiting game ");
+                        ui.appendToOutput("Exiting game.");
                         break;
                     }
                     //调用serverconnection类的向server发送来发送信息到服务器
