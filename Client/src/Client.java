@@ -3,6 +3,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.List;
 
 public class Client {
     private static final String SERVER_ADDRESS = "127.0.0.1";
@@ -16,7 +17,7 @@ public class Client {
     private UserInputHandler userInputHandler;
     private String username; // 类成员变量，用于存储用户名
 
-    public Client() {
+    public Client(UI ui) {
         try {
             // 初始化UDP套接字用于认证
             udpSocket = new DatagramSocket();
@@ -103,21 +104,29 @@ public class Client {
     private void startGameCommunication() {
         if (serverConnection != null && userInputHandler != null) {
             while (true) {
-                String serverResponse = serverConnection.receiveFromServer(); // 从游戏服务器接收消息
+                // 接收来自服务器的所有消息
+                List<String> serverResponses = serverConnection.receiveAllMessages();
 
-                if (serverResponse == null) {
-                    System.out.println("Connection closed by the server.");
-                    break;
+                if (serverResponses.isEmpty()) {
+                    System.out.println("No new messages from the server. Waiting for more data...");
                 }
 
-                if (serverResponse.equalsIgnoreCase("success")) {
-                    System.out.println("You have succeeded! Congratulations!");
-                    break;
-                } else if (serverResponse.equalsIgnoreCase("lose")) {
-                    System.out.println("You have lost! Try again if you want.");
-                    break;
-                } else {
-                    System.out.println("Server: " + serverResponse);
+                // 处理所有收到的服务器消息
+                for (String serverResponse : serverResponses) {
+                    if (serverResponse == null) {
+                        System.out.println("Connection closed by the server.");
+                        break;
+                    }
+
+                    if (serverResponse.equalsIgnoreCase("success")) {
+                        System.out.println("You have succeeded! Congratulations!");
+                        return;
+                    } else if (serverResponse.equalsIgnoreCase("lose")) {
+                        System.out.println("You have lost! Try again if you want.");
+                        return;
+                    } else {
+                        System.out.println("Server: " + serverResponse);
+                    }
                 }
 
                 // 获取用户输入并发送到服务器
@@ -129,11 +138,12 @@ public class Client {
                 }
 
                 serverConnection.sendToServer(userInput);
-            }
-            try {
-                Thread.sleep(50); // 暂停50ms
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+
+                try {
+                    Thread.sleep(50); // 暂停50ms
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
             }
             // 关闭游戏连接
             serverConnection.close();

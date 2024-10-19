@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 public class UserInputHandler {
     private Scanner scanner;
+    private UI ui;
 
     public  UserInputHandler(){
         this.scanner = new Scanner(System.in);
@@ -15,8 +16,10 @@ public class UserInputHandler {
 
     // 默认使用 "Please enter a letter : " 作为提示
     public String getUserInput() {
-        return getUserInput("Please enter a letter : ");
+        ui.appendToOutput("Please enter a letter: ");
+        return ui.waitForUserInput(); // 等待图形界面用户输入
     }
+
 
 
     public void close(){
