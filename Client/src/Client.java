@@ -16,15 +16,18 @@ public class Client {
     private ServerConnection serverConnection;
     private UserInputHandler userInputHandler;
     private String username; // 类成员变量，用于存储用户名
+    private UI ui; // 添加 UI 类成员变量
 
     public Client(UI ui) {
         try {
-            // 初始化UDP套接字用于认证
+            this.ui = ui; // 保存传入的 UI 实例
             udpSocket = new DatagramSocket();
             serverAddress = InetAddress.getByName(SERVER_ADDRESS);
-            userInputHandler = new UserInputHandler(); // 初始化用户输入处理器
+            userInputHandler = new UserInputHandler(ui); // 初始化用户输入处理器，传入 UI
         } catch (IOException e) {
-            System.out.println("Error initializing UDP client: " + e.getMessage());
+            if (ui != null) {
+                ui.appendToOutput("Error initializing UDP client: " + e.getMessage());
+            }
         }
     }
 
@@ -43,15 +46,15 @@ public class Client {
 
     private boolean authenticateWithUDP() {
         while (true) {
+            // 获取用户名
             username = userInputHandler.getUserInput("Enter username (or type 'exit' to quit): ");
-
             if (username.equalsIgnoreCase("exit")) {
-                System.out.println("Exiting client...");
+                ui.appendToOutput("Exiting client...");
                 return false; // 用户选择退出
             }
 
-            System.out.print("Enter password: ");
-            String password = userInputHandler.getUserInput(); // 获取密码
+            // 获取密码
+            String password = userInputHandler.getUserInput("Enter password: ");
 
             // 构建认证请求消息
             String authMessage = "AUTH:" + username + ":" + password;
@@ -69,17 +72,17 @@ public class Client {
 
                 // 解析服务器响应
                 String serverResponse = new String(receivePacket.getData(), 0, receivePacket.getLength());
-                System.out.println("Server response: " + serverResponse);
+                ui.appendToOutput("Server response: " + serverResponse);
 
                 if (serverResponse.equalsIgnoreCase("Authentication successful")) {
-                    System.out.println("Authentication successful! Connecting to game server...");
+                    ui.appendToOutput("Authentication successful! Connecting to game server...");
                     return true; // 认证成功
                 } else {
-                    System.out.println("Authentication failed. Please try again.");
+                    ui.appendToOutput("Authentication failed. Please try again.");
                 }
 
             } catch (IOException e) {
-                System.out.println("Error communicating with the authentication server: " + e.getMessage());
+                ui.appendToOutput("Error communicating with the authentication server: " + e.getMessage());
             }
         }
     }
@@ -89,7 +92,7 @@ public class Client {
             // 初始化TCP连接到游戏逻辑服务器
             tcpSocket = new Socket(SERVER_ADDRESS, GAME_SERVER_PORT);
             tcpSocket.setSoTimeout(3000);
-            System.out.println("SUCCESS CONNECTION to game server " + SERVER_ADDRESS + " : " + GAME_SERVER_PORT);
+            ui.appendToOutput("SUCCESS CONNECTION to game server " + SERVER_ADDRESS + " : " + GAME_SERVER_PORT);
 
             serverConnection = new ServerConnection(tcpSocket); // 使用ServerConnection进行TCP通信
 
@@ -97,7 +100,7 @@ public class Client {
             serverConnection.sendToServer(username);
 
         } catch (IOException e) {
-            System.out.println("Error connecting to game server: " + e.getMessage());
+            ui.appendToOutput("Error connecting to game server: " + e.getMessage());
         }
     }
 
@@ -108,32 +111,32 @@ public class Client {
                 List<String> serverResponses = serverConnection.receiveAllMessages();
 
                 if (serverResponses.isEmpty()) {
-                    System.out.println("No new messages from the server. Waiting for more data...");
+                    ui.appendToOutput("No new messages from the server. Waiting for more data...");
                 }
 
                 // 处理所有收到的服务器消息
                 for (String serverResponse : serverResponses) {
                     if (serverResponse == null) {
-                        System.out.println("Connection closed by the server.");
+                        ui.appendToOutput("Connection closed by the server.");
                         break;
                     }
 
                     if (serverResponse.equalsIgnoreCase("success")) {
-                        System.out.println("You have succeeded! Congratulations!");
+                        ui.appendToOutput("You have succeeded! Congratulations!");
                         return;
                     } else if (serverResponse.equalsIgnoreCase("lose")) {
-                        System.out.println("You have lost! Try again if you want.");
+                        ui.appendToOutput("You have lost! Try again if you want.");
                         return;
                     } else {
-                        System.out.println("Server: " + serverResponse);
+                        ui.appendToOutput("Server: " + serverResponse);
                     }
                 }
 
                 // 获取用户输入并发送到服务器
-                String userInput = userInputHandler.getUserInput();
+                String userInput = userInputHandler.getUserInput("Please enter a letter:");
 
                 if (userInput.equalsIgnoreCase("exit")) {
-                    System.out.println("Exiting game...");
+                    ui.appendToOutput("Exiting game...");
                     break;
                 }
 
@@ -158,7 +161,6 @@ public class Client {
             userInputHandler.close();
         }
 
-        System.out.println("Client resources released.");
+        ui.appendToOutput("Client resources released.");
     }
-
 }
