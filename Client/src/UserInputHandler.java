@@ -1,7 +1,7 @@
 public class UserInputHandler {
-    private UI ui;
+    private GameUI ui;
 
-    public UserInputHandler(UI ui) {
+    public UserInputHandler(GameUI ui) {
         this.ui = ui;
     }
 
