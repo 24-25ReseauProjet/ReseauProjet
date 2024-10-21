@@ -51,7 +51,7 @@ public class LoginUI {
     private void authenticateUser(String username, String password) {
         // 创建 Client 对象进行认证
         client = new Client();
-        boolean authenticated = client.authenticateWithCredentials(username, password);
+        boolean authenticated = client.authenticate(username, password);
 
         if (authenticated) {
             JOptionPane.showMessageDialog(frame, "Authentication Successful!");

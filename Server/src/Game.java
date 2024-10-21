@@ -12,9 +12,8 @@ public class Game {
         this.gameWon = false;
     }
 
-    // 处理用户输入的字母
     public String processInput(String input) {
-        // 如果用户输入的不是一个单字母，输出下列文字
+        // 如果用户输入的不是一个单字母，则输出下列文字
         if (input == null || input.length() != 1 || !Character.isLetter(input.charAt(0))) {
             return "Enter a valid single letter, please.";
         }

@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,23 +30,17 @@ public class GameServer {
     public void start() {
         while (true) {
             try {
-                // 接受客户端连接
                 Socket clientSocket = serverSocket.accept();
                 String clientAddress = clientSocket.getInetAddress().toString();
-
                 System.out.println("New client connected: " + clientAddress);
 
-                // 从客户端读取用户名
                 String username = getUsernameFromClient(clientSocket);
 
-                // 检查该用户是否已通过认证
                 if (username != null && AuthServer.isAuthenticated(username)) {
                     System.out.println("User " + username + " is authenticated. Starting game.");
 
-                    // 创建一个新的游戏并随机分配一个单词
                     Game game = new Game(getRandomWord());
 
-                    // 启动一个新的客户端线程处理这个连接
                     ClientThread clientThread = new ClientThread(clientSocket, game);
                     threadPool.execute(clientThread);
                 } else {
@@ -78,4 +73,6 @@ public class GameServer {
         return WORDS[random.nextInt(WORDS.length)];
     }
 
+
 }
+

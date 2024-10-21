@@ -17,7 +17,7 @@ public class GameUI {
         client.setGameUI(this); // 让Client知道这个GameUI
 
         // 创建游戏窗口
-        JFrame frame = new JFrame("The UI Of Game");
+        JFrame frame = new JFrame("Jeu du perdu");
         frame.setSize(600, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
@@ -55,7 +55,7 @@ public class GameUI {
             }
         });
 
-        // 添加一个按钮用于重新启动游戏或其他功能（可选）
+        // 添加一个按钮用于重新启动游戏或其他功能
         startGameButton = new JButton("Restart Game");
         startGameButton.setBounds(50, 350, 150, 30);
         frame.add(startGameButton);
@@ -69,8 +69,6 @@ public class GameUI {
         });
 
         frame.setVisible(true);
-
-        // 启动游戏逻辑
         client.start();
     }
 
