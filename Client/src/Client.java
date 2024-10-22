@@ -37,7 +37,7 @@ public class Client {
         }
     }
 
-    // 使用文件进行本地验证登录
+
     public boolean authenticate(String username, String password) {
         this.username = username;
         return userDataManager.authenticate(username, password);
