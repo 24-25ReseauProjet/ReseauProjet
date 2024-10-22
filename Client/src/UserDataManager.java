@@ -5,11 +5,6 @@ import java.util.Map;
 public class UserDataManager {
     private static final String USER_DATA_FILE = "user_data.txt"; // 用户数据文件
 
-    // 验证用户名和密码
-    public boolean authenticate(String username, String password) {
-        Map<String, String> users = loadUserData();
-        return users.containsKey(username) && users.get(username).equals(password);
-    }
 
     // 注册用户并保存到文件
     public boolean register(String username, String password) {

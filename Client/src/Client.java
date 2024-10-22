@@ -14,13 +14,11 @@ public class Client {
     private ServerTCP serverTCP;
     private GameUI gameUI;
     private String username; // 添加 username 成员变量
-    private UserDataManager userDataManager; // 用于用户数据管理的类
 
     public Client() {
         try {
             serverUDP = new ServerUDP(SERVER_ADDRESS,AUTH_SERVER_PORT);
             this.autenticator = new Autenticator(serverUDP);
-            this.userDataManager = new UserDataManager(); // 初始化 UserDataManager 对象
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,18 +35,10 @@ public class Client {
         }
     }
 
-
     public boolean authenticate(String username, String password) {
         this.username = username;
-        return userDataManager.authenticate(username, password);
+        return autenticator.authenticateWithCredentials(username, password);
     }
-
-
-    public boolean register(String username, String password) {
-        return userDataManager.register(username, password);
-    }
-
-
     public void start() {
         try {
             Socket tcpSocket = new Socket(SERVER_ADDRESS, GAME_SERVER_PORT);
