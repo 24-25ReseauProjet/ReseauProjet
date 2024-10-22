@@ -8,7 +8,7 @@ public class Autenticator {
     }
 
     public boolean authenticateWithCredentials(String username, String password) {
-        String authMessage = "AUTH:" + username + ":" + password;
+            String authMessage = "AUTH:" + username + ":" + password;
 
         try {
             serverUDP.sendMessage(authMessage);
