@@ -16,36 +16,28 @@ public class ClientThread extends Thread {
         this.game = game;
     }
 
-    // 线程的主逻辑部分，线程启动时会自动执行run中的代码
     public void run() {
         try {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             out = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            // 欢迎信息
             out.println("Welcome to the game");
 
-            // 立即发送游戏的初始状态
             sendInitialGameState();
 
             String clientInput;
-            // 一直监听用户的消息，直到游戏结束
             while ((clientInput = in.readLine()) != null) {
                 String response = game.processInput(clientInput);
-                if (game.isGameOverWin()) {
-                    out.println("success");
+                out.println(response);
+                if (game.isWon()) {
                     break;
-                } else if (game.isGameLose()) {
-                    out.println("lose");
+                } else if (game.isLose()) {
                     break;
-                } else {
-                    out.println(response);
                 }
             }
         } catch (IOException e) {
             System.out.println("Error in client communication: " + e.getMessage());
         } finally {
-            // 关闭输入输出流和Socket连接
             try {
                 if (in != null) in.close();
                 if (out != null) out.close();
@@ -56,7 +48,6 @@ public class ClientThread extends Thread {
         }
     }
 
-    // 主动向客户端发送游戏的初始状态
     private void sendInitialGameState() {
         String initialState = game.getCurrentState();
         int remainingAttempts = game.getRemainingAttempts();
