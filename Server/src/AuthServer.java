@@ -27,6 +27,7 @@ public class AuthServer {
             serverSocket = new DatagramSocket(PORT); // 创建DatagramSocket对象，绑定指定端口
             System.out.println("Auth server is listening on port: " + PORT);
             loadUserData(); // 加载用户数据
+
         } catch (IOException e) {
             System.out.println("Error initializing auth server: " + e.getMessage());
         }
@@ -44,6 +45,11 @@ public class AuthServer {
                 InetAddress clientAddress = receivePacket.getAddress();
                 int clientPort = receivePacket.getPort();
 
+                if ("RELOAD_USER_DATA".equals(clientMessage)) {
+                    loadUserData(); // 重新加载用户数据
+                    System.out.println("Reloaded user data upon request.");
+                    continue; // 不处理其他逻辑，直接继续监听新的请求
+                }
                 System.out.println("Received authentication request from " + clientAddress + ":" + clientPort);
 
                 String responseMessage = authenticate(clientMessage);
