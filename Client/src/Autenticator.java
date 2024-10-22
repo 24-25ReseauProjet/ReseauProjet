@@ -2,7 +2,6 @@ import java.io.IOException;
 
 public class Autenticator {
     private ServerUDP serverUDP;
-    private String username;
 
     public Autenticator(ServerUDP serverUDP){
         this.serverUDP = serverUDP;

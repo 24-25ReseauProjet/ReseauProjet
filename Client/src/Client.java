@@ -13,6 +13,7 @@ public class Client {
     private Autenticator autenticator;
     private ServerTCP serverTCP;
     private GameUI gameUI;
+    private ModeChooseUI modeChooseUI;
     private String username; // 添加 username 成员变量
 
     public Client() {
@@ -22,10 +23,6 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void setGameUI(GameUI gameUI) {
-        this.gameUI = gameUI;
     }
 
     public void sendInputToServer(String input) {
@@ -39,6 +36,7 @@ public class Client {
         this.username = username;
         return autenticator.authenticateWithCredentials(username, password);
     }
+
     public void start() {
         try {
             Socket tcpSocket = new Socket(SERVER_ADDRESS, GAME_SERVER_PORT);
@@ -67,4 +65,13 @@ public class Client {
             gameUI.appendToOutput("Error connecting to game server: " + e.getMessage());
         }
     }
+
+    public void setGameUI(GameUI gameUI) {
+        this.gameUI = gameUI;
+    }
+
+    public void setModeChooseUI(ModeChooseUI modeChooseUI){
+        this.modeChooseUI = modeChooseUI;
+    }
+
 }

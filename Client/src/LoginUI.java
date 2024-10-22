@@ -44,7 +44,6 @@ public class LoginUI {
                 authenticateUser(username, password);
             }
         });
-
         frame.setVisible(true);
     }
 
@@ -56,7 +55,8 @@ public class LoginUI {
         if (authenticated) {
             JOptionPane.showMessageDialog(frame, "Authentication Successful!");
             frame.dispose(); // 关闭认证窗口
-            new GameUI(client); // 打开游戏窗口
+            //new GameUI(client); // 打开游戏窗口
+            new ModeChooseUI(client);
         } else {
             JOptionPane.showMessageDialog(frame, "Authentication Failed. Please try again.");
         }

@@ -62,7 +62,6 @@ public class GameUI {
 
         startGameButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // 这里可以加入重置游戏或者其他操作
                 statusLabel.setText("Game restarted...");
                 client.start(); // 重新启动游戏逻辑
             }
@@ -71,7 +70,6 @@ public class GameUI {
         frame.setVisible(true);
         client.start();
     }
-
 
     // 用于从客户端添加消息到输出区域
     public void appendToOutput(String message) {
