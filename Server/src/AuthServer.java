@@ -87,7 +87,7 @@ public class AuthServer {
     // 验证用户信息的方法（此处为简单的硬编码验证）
     private boolean isValidUser(String username, String password) {
         // 检查用户名和密码是否匹配硬编码的正确值
-        return "user".equals(username) && "password123".equals(password);
+        return "user".equals(username) && "123456".equals(password);
     }
 
     // 静态方法，检查用户是否已经认证过

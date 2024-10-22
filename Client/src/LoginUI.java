@@ -34,8 +34,12 @@ public class LoginUI {
         JButton loginButton = new JButton("Login");
         loginButton.setBounds(150, 150, 100, 30);
         frame.add(loginButton);
+        // 返回按钮
+        JButton returnButton = new JButton("Return Main");
+        returnButton.setBounds(210, 200, 120, 30); // 调整按钮位置
+        frame.add(returnButton);
 
-        // 登录按钮点击事件
+        // 点击登录按钮
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -45,18 +49,27 @@ public class LoginUI {
             }
         });
 
+        // 点击返回按钮
+        returnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose(); // 关闭当前登录界面
+                new MainScreenUI(); // 打开主界面
+            }
+        });
+
         frame.setVisible(true);
     }
-
     private void authenticateUser(String username, String password) {
-        // 创建 Client 对象进行认证
-        client = new Client();
+        // 建立一个Client实例，套用用户信息进行认证
+
+        this.client = new Client();
         boolean authenticated = client.authenticate(username, password);
 
         if (authenticated) {
             JOptionPane.showMessageDialog(frame, "Authentication Successful!");
-            frame.dispose(); // 关闭认证窗口
-            new GameUI(client); // 打开游戏窗口
+            frame.dispose();
+            new GameUI(client);
         } else {
             JOptionPane.showMessageDialog(frame, "Authentication Failed. Please try again.");
         }
