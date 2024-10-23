@@ -47,6 +47,7 @@ public class MainScreenUI {
             }
         });
 
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 

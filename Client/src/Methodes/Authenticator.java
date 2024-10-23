@@ -4,10 +4,10 @@ import Servers.ServerUDP;
 
 import java.io.IOException;
 
-public class Autenticator {
+public class Authenticator {
     private ServerUDP serverUDP;
 
-    public Autenticator(ServerUDP serverUDP){
+    public Authenticator(ServerUDP serverUDP){
         this.serverUDP = serverUDP;
     }
 

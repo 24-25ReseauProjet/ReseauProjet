@@ -31,7 +31,7 @@ public class ServerTCP {
         }
     }
 
-    public List<String> receiveAllMessages() {
+    public List<String> receiveMessagesFromServer() {
         List<String> messages = new ArrayList<>();
         try {
             while (in.ready()) {// 当有数据时才读取

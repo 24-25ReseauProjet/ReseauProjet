@@ -11,9 +11,11 @@ import java.awt.event.KeyEvent;
 public class GameUI {
     private JButton startGameButton;
     private JLabel statusLabel;
+    private JLabel remindLabel;
     private JTextArea outputArea;
-    private Client client;
     private JTextField inputField;
+    private JButton back;
+    private Client client;
     private String userInput;
 
     public GameUI(Client client) {
@@ -22,13 +24,13 @@ public class GameUI {
 
         // 创建游戏窗口
         JFrame frame = new JFrame("Jeu du perdu");
-        frame.setSize(600, 600);
+        frame.setSize(600, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
         // 添加状态标签
         statusLabel = new JLabel("Game started...");
-        statusLabel.setBounds(50, 20, 300, 30);
+        statusLabel.setBounds(50, 35, 300, 30);
         frame.add(statusLabel);
 
         // 添加输出文本区域
@@ -38,6 +40,10 @@ public class GameUI {
         JScrollPane scrollPane = new JScrollPane(outputArea);
         scrollPane.setBounds(50, 70, 500, 200);
         frame.add(scrollPane);
+
+        remindLabel = new JLabel("Please enter here and press Enter : ");
+        remindLabel.setBounds(50, 270, 300, 30);
+        frame.add(remindLabel);
 
         // 添加输入字段
         inputField = new JTextField();
@@ -71,6 +77,19 @@ public class GameUI {
             }
         });
 
+        back = new JButton("Back to menu");
+        back.setBounds(350,350,150,30);
+        frame.add(back);
+
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                new ModeChooseUI(client);
+            }
+        });
+
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         client.start();
     }
@@ -84,16 +103,8 @@ public class GameUI {
         });
     }
 
-    public synchronized String waitForUserInput() {
-        try {
-            userInput = null;
-            while (userInput == null) {
-                wait(); // 等待用户输入
-            }
-            return userInput;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return null;
-        }
+    public static void main(String args[]){
+        Client client1 = new Client();
+        new GameUI(client1);
     }
 }

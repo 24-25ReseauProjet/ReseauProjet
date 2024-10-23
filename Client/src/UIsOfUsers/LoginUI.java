@@ -71,6 +71,7 @@ public class LoginUI {
             }
         });
 
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 

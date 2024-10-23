@@ -1,6 +1,6 @@
 package client;
 
-import Methodes.Autenticator;
+import Methodes.Authenticator;
 import Servers.ServerTCP;
 import Servers.ServerUDP;
 import UIsOfUsers.GameUI;
@@ -15,7 +15,7 @@ public class Client {
     private static final int AUTH_SERVER_PORT = 54321; // UDP认证服务器端口
     private static final int GAME_SERVER_PORT = 12345; // 游戏逻辑服务器TCP端口
     private ServerUDP serverUDP;
-    private Autenticator autenticator;
+    private Authenticator authenticator;
     private ServerTCP serverTCP;
     private GameUI gameUI;
     private ModeChooseUI modeChooseUI;
@@ -24,7 +24,7 @@ public class Client {
     public Client() {
         try {
             serverUDP = new ServerUDP(SERVER_ADDRESS,AUTH_SERVER_PORT);
-            this.autenticator = new Autenticator(serverUDP);
+            this.authenticator = new Authenticator(serverUDP);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,7 +39,7 @@ public class Client {
 
     public boolean authenticate(String username, String password) {
         this.username = username;
-        return autenticator.authenticateWithCredentials(username, password);
+        return authenticator.authenticateWithCredentials(username, password);
     }
 
     public void start() {
@@ -53,7 +53,7 @@ public class Client {
 
             new Thread(() -> {
                 while (true) {
-                    List<String> serverResponses = serverTCP.receiveAllMessages();
+                    List<String> serverResponses = serverTCP.receiveMessagesFromServer();
                     for (String response : serverResponses) {
                         gameUI.appendToOutput(response);
                     }

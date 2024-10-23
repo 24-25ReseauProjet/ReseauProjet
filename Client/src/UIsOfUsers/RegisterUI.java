@@ -86,6 +86,7 @@ public class RegisterUI {
             }
         });
 
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
     private void registerUser(String username, String password) {
