@@ -32,6 +32,7 @@ public class ModeChooseUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //ModePvP start
+                //client.sendInputToServer("PvP");
             }
         });
 
@@ -42,7 +43,7 @@ public class ModeChooseUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new GameUI(client);
+                new PvEGameUI(client);
             }
         });
 

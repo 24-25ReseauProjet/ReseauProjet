@@ -4,16 +4,16 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ClientThread extends Thread {
+public class ClientThreadPvE extends Thread {
 
     private Socket clientSocket; // 客户端连接的Socket对象
     private BufferedReader in; // 向客户端读取数据
     private PrintWriter out; // 向客户端发送数据
-    private Game game; // 游戏逻辑对象，管理客户端的游戏状态
+    private GamePvE gamePvE; // 游戏逻辑对象，管理客户端的游戏状态
 
-    public ClientThread(Socket clientSocket, Game game) {
+    public ClientThreadPvE(Socket clientSocket, GamePvE gamePvE) {
         this.clientSocket = clientSocket;
-        this.game = game;
+        this.gamePvE = gamePvE;
     }
 
     public void run() {
@@ -27,11 +27,11 @@ public class ClientThread extends Thread {
 
             String clientInput;
             while ((clientInput = in.readLine()) != null) {
-                String response = game.processInput(clientInput);
+                String response = gamePvE.processInput(clientInput);
                 out.println(response);
-                if (game.isWon()) {
+                if (gamePvE.isWon()) {
                     break;
-                } else if (game.isLose()) {
+                } else if (gamePvE.isLose()) {
                     break;
                 }
             }
@@ -49,8 +49,8 @@ public class ClientThread extends Thread {
     }
 
     private void sendInitialGameState() {
-        String initialState = game.getCurrentState();
-        int remainingAttempts = game.getRemainingAttempts();
+        String initialState = gamePvE.getCurrentState();
+        int remainingAttempts = gamePvE.getRemainingAttempts();
         out.println("Game started! Current state: " + initialState + ". Remaining attempts: " + remainingAttempts);
     }
 }

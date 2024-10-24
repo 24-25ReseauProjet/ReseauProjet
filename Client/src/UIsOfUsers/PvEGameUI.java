@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class GameUI {
+public class PvEGameUI {
     private JButton startGameButton;
     private JLabel statusLabel;
     private JLabel remindLabel;
@@ -18,7 +18,7 @@ public class GameUI {
     private Client client;
     private String userInput;
 
-    public GameUI(Client client) {
+    public PvEGameUI(Client client) {
         this.client = client;
         client.setGameUI(this); // 让Client知道这个GameUI
 
@@ -56,7 +56,7 @@ public class GameUI {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    synchronized (GameUI.this) {
+                    synchronized (PvEGameUI.this) {
                         userInput = inputField.getText().trim();
                         inputField.setText("");
                         client.sendInputToServer(userInput); // 发送用户输入到服务器
@@ -73,7 +73,7 @@ public class GameUI {
         startGameButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 statusLabel.setText("Game restarted...");
-                client.start(); // 重新启动游戏逻辑
+                client.startPvE(); // 重新启动游戏逻辑
             }
         });
 
@@ -91,7 +91,7 @@ public class GameUI {
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        client.start();
+        client.startPvE();
     }
 
     // 用于从客户端添加消息到输出区域
@@ -105,6 +105,6 @@ public class GameUI {
 
     public static void main(String args[]){
         Client client1 = new Client();
-        new GameUI(client1);
+        new PvEGameUI(client1);
     }
 }

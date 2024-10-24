@@ -1,7 +1,7 @@
 import java.util.HashSet;
 import java.util.Set;
 
-public class Game {
+public class GamePvE {
     private String wordToGuess;
     private StringBuilder currentGuess; // StringBuilder是Java里面需要频繁修改字符的时候使用的
     private int remainingGuesses;
@@ -9,7 +9,7 @@ public class Game {
     private Set<Character> gussedLetters;
 
     // 构造函数，初始化游戏状态
-    public Game(String wordToGuess) {
+    public GamePvE(String wordToGuess) {
         this.wordToGuess = wordToGuess.toLowerCase();
         this.currentGuess = new StringBuilder("_".repeat(wordToGuess.length()));
         this.remainingGuesses = 6; // 默认允许玩家猜6次

@@ -3,7 +3,7 @@ package client;
 import Methodes.Authenticator;
 import Servers.ServerTCP;
 import Servers.ServerUDP;
-import UIsOfUsers.GameUI;
+import UIsOfUsers.PvEGameUI;
 import UIsOfUsers.ModeChooseUI;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class Client {
     private ServerUDP serverUDP;
     private Authenticator authenticator;
     private ServerTCP serverTCP;
-    private GameUI gameUI;
+    private PvEGameUI pvEGameUI;
     private ModeChooseUI modeChooseUI;
     private String username; // 添加 username 成员变量
 
@@ -33,7 +33,7 @@ public class Client {
     public void sendInputToServer(String input) {
         if (serverTCP != null) {
             serverTCP.sendToServer(input);
-            gameUI.appendToOutput("You: " + input);
+            pvEGameUI.appendToOutput("You: " + input);
         }
     }
 
@@ -42,22 +42,20 @@ public class Client {
         return authenticator.authenticateWithCredentials(username, password);
     }
 
-    public void start() {
+    public void startPvE() {
         try {
             Socket tcpSocket = new Socket(SERVER_ADDRESS, GAME_SERVER_PORT);
             tcpSocket.setSoTimeout(3000);
-            gameUI.appendToOutput("Connected to game server: " + SERVER_ADDRESS + ": " + GAME_SERVER_PORT);
+            pvEGameUI.appendToOutput("Connected to game server: " + SERVER_ADDRESS + ": " + GAME_SERVER_PORT);
             serverTCP = new ServerTCP(tcpSocket);
-            serverTCP.sendToServer(username);
-            serverTCP.sendToServer("START_GAME");
+            serverTCP.sendToServer("MODE:" + username + ":PvE");
 
             new Thread(() -> {
                 while (true) {
                     List<String> serverResponses = serverTCP.receiveMessagesFromServer();
                     for (String response : serverResponses) {
-                        gameUI.appendToOutput(response);
+                        pvEGameUI.appendToOutput(response);
                     }
-
                     try {
                         Thread.sleep(50); // 暂停 50ms
                     } catch (InterruptedException e) {
@@ -67,12 +65,41 @@ public class Client {
             }).start();
 
         } catch (IOException e) {
-            gameUI.appendToOutput("Error connecting to game server: " + e.getMessage());
+            pvEGameUI.appendToOutput("Error connecting to game server: " + e.getMessage());
         }
     }
 
-    public void setGameUI(GameUI gameUI) {
-        this.gameUI = gameUI;
+    public void startPvP() {
+        try {
+            Socket tcpSocket = new Socket(SERVER_ADDRESS, GAME_SERVER_PORT);
+            tcpSocket.setSoTimeout(3000);
+            pvEGameUI.appendToOutput("Connected to game server: " + SERVER_ADDRESS + ": " + GAME_SERVER_PORT);
+            serverTCP = new ServerTCP(tcpSocket);
+
+            serverTCP.sendToServer("MODE:" + username + ":PvP");
+
+            new Thread(() -> {
+                while (true) {
+                    List<String> serverResponses = serverTCP.receiveMessagesFromServer();
+                    for (String response : serverResponses) {
+                        pvEGameUI.appendToOutput(response);
+                    }
+                    try {
+                        Thread.sleep(50); // 暂停 50ms
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }).start();
+
+
+        }catch (IOException e){
+            System.out.println("Error in startPvP "+ e.getMessage());
+        }
+    }
+
+    public void setGameUI(PvEGameUI pvEGameUI) {
+        this.pvEGameUI = pvEGameUI;
     }
 
     public void setModeChooseUI(ModeChooseUI modeChooseUI){
