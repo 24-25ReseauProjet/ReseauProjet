@@ -1,8 +1,11 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,6 +16,7 @@ public class GameServer {
     private ServerSocket serverSocket;
     private ExecutorService threadPool;
     private static final String[] WORDS = {"apple", "banana", "orange", "grape", "pineapple"};
+    private Queue<Socket> pvpQueue = new LinkedList<>(); // PvP匹配队列
 
     public GameServer() {
         try {
@@ -23,37 +27,6 @@ public class GameServer {
             System.out.println("Error initializing server: " + e.getMessage());
         }
     }
-
-    /*public void start() {
-        while (true) {
-            try {
-                Socket clientSocket = serverSocket.accept();
-                String clientAddress = clientSocket.getInetAddress().toString();
-                System.out.println("New client connected: " + clientAddress);
-
-                String username = getUsernameFromClient(clientSocket);
-                //String modeChoose = getModeChooseFromClient(clientSocket);
-
-                if (username != null && AuthServer.isAuthenticated(username)) {
-                    System.out.println("User " + username + " is authenticated. Starting game.");
-
-                    //if(modeChoose.equals("PvP")){
-
-                    //}else if(modeChoose.equals("PvE")){
-                        Game game = new Game(getRandomWord());
-                        ClientThread clientThread = new ClientThread(clientSocket, game);
-                        threadPool.execute(clientThread);
-                   //}
-                } else {
-                    System.out.println("Unauthorized access attempt from " + clientAddress);
-                    clientSocket.close();
-                }
-
-            } catch (IOException e) {
-                System.out.println("Error accepting client connection: " + e.getMessage());
-            }
-        }
-    }*/
 
     public void start() {
         while (true) {
@@ -73,7 +46,7 @@ public class GameServer {
                         switch (modeChoose) {
                             case "PvP":
                                 System.out.println("PvP mode selected for user: " + username);
-                                // PvP
+                                addPlayerToPvPQueue(clientSocket); // 添加玩家到PvP队列
                                 break;
                             case "PvE":
                                 System.out.println("PvE mode selected for user: " + username);
@@ -101,24 +74,28 @@ public class GameServer {
         }
     }
 
-    // 从客户端读取用户名
-    private String getUsernameFromClient(Socket socket) {
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            // 读取客户端发送的第一条消息，这应该是用户名
-            String username = in.readLine();
-            return username != null ? username.trim() : null;
-        } catch (IOException e) {
-            System.out.println("Error reading username from client: " + e.getMessage());
-            return null;
-        }
-    }
+    // 添加玩家到PvP队列并尝试匹配
+    private void addPlayerToPvPQueue(Socket clientSocket) {
+        pvpQueue.add(clientSocket);
+        if (pvpQueue.size() >= 2) {
+            Socket player1 = pvpQueue.poll();
+            Socket player2 = pvpQueue.poll();
 
-    private String getModeChooseFromClient(Socket socket) throws IOException {
-        socket.setSoTimeout(1000);
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        String modechoose = in.readLine();
-        return modechoose!=null ? modechoose.trim():null;
+            // 启动PvP游戏实例
+            GamePvP gamePvP = new GamePvP(getRandomWord());
+            ClientThreadPvP clientThreadPvP = new ClientThreadPvP(player1, player2, gamePvP);
+            threadPool.execute(clientThreadPvP);
+
+            System.out.println("Starting PvP game between two players...");
+        } else {
+            // 如果只有一个玩家，发送等待信息
+            try {
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                out.println("Waiting for other player...");
+            } catch (IOException e) {
+                System.out.println("Error sending waiting message to client: " + e.getMessage());
+            }
+        }
     }
 
     private String[] parseClientMessage(Socket socket) {
@@ -144,7 +121,4 @@ public class GameServer {
         Random random = new Random();
         return WORDS[random.nextInt(WORDS.length)];
     }
-
-
 }
-
