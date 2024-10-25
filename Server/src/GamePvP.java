@@ -44,7 +44,7 @@ public class GamePvP {
         }
 
         if (isWon()) {
-            return "Congratulations! The word was: " + wordToGuess;
+            return "Congratulations! The word was: " + wordToGuess + ". Player " + (player + 1) + " wins!";
         }
 
         // 切换到下一个玩家
@@ -52,10 +52,11 @@ public class GamePvP {
             return "Good guess! Current state: " + currentGuess.toString();
         } else {
             playerTurn = (playerTurn + 1) % 2; // 切换回合
-            return "Wrong guess! Current state: " + currentGuess.toString();
+            return "Wrong guess! Current state: " + currentGuess.toString() + ". Next player's turn.";
         }
     }
 
+    // 检查是否猜中了所有字母
     public boolean isWon() {
         if (currentGuess.indexOf("_") == -1) {
             gameWon = true;

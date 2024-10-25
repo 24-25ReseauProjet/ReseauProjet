@@ -37,29 +37,30 @@ public class ClientThreadPvP extends Thread {
         try {
             boolean gameOn = true;
             while (gameOn) {
-                out1.println("Your turn!"); // 提示玩家1输入
-                String guess1 = in1.readLine();
-                String result1 = game.processInput(guess1, 1);
-                out1.println(result1);
-                out2.println("Player 1 guessed: " + guess1);
+                if (game.getPlayerTurn() == 0) {
+                    out1.println("Your turn! Enter a letter:");
+                    String guess1 = in1.readLine();
+                    String result1 = game.processInput(guess1, 0);
+                    out1.println(result1);
+                    out2.println("Player 1 guessed: " + guess1 + " - " + game.getCurrentState());
 
-                if (game.isWon()) {
-                    out1.println("Game over! You win!");
-                    out2.println("Game over! Player 1 wins!");
-                    break;
-                }
+                    if (game.isWon()) {
+                        out1.println("Game over! You win!");
+                        out2.println("Game over! Player 1 wins!");
+                        break;
+                    }
+                } else {
+                    out2.println("Your turn! Enter a letter:");
+                    String guess2 = in2.readLine();
+                    String result2 = game.processInput(guess2, 1);
+                    out2.println(result2);
+                    out1.println("Player 2 guessed: " + guess2 + " - " + game.getCurrentState());
 
-                // 轮到玩家2
-                out2.println("Your turn!"); // 提示玩家2输入
-                String guess2 = in2.readLine();
-                String result2 = game.processInput(guess2, 2);
-                out2.println(result2);
-                out1.println("Player 2 guessed: " + guess2);
-
-                if (game.isWon()) {
-                    out2.println("Game over! You win!");
-                    out1.println("Game over! Player 2 wins!");
-                    break;
+                    if (game.isWon()) {
+                        out2.println("Game over! You win!");
+                        out1.println("Game over! Player 2 wins!");
+                        break;
+                    }
                 }
             }
         } catch (IOException e) {
