@@ -31,8 +31,8 @@ public class ModeChooseUI {
         ModePvP.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //ModePvP start
-                //client.sendInputToServer("PvP");
+                frame.dispose();
+                new PvPGameUI(client); // 启动 PvP 游戏界面
             }
         });
 
