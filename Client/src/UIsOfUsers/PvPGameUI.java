@@ -121,9 +121,10 @@ public class PvPGameUI {
                     inputField.setEditable(false);
                     statusLabel.setText("Game finished.");
                     if (isTimerStarted) {
-                        timer.stop(); // 停止计时器
+                        timer.stop(); // 停止计时器22
                         long totalTime = (System.currentTimeMillis() - startTime) / 1000;
                         outputArea.append("Game completed in " + totalTime + " seconds.\n");
+
                     }
                 }
             }
