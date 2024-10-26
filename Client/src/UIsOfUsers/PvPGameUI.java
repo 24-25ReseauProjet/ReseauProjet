@@ -15,25 +15,28 @@ public class PvPGameUI {
     private JTextField inputField;
     private Client client;
     private String userInput;
+    private long startTime;
+    private Timer timer;
+    private JLabel timerLabel;
+    private boolean isTimerStarted = false; // 标记计时器是否已启动
 
     public PvPGameUI(Client client) {
         this.client = client;
-
-        // 让客户端知道此UI，用于处理消息显示
         client.setGameUI(this);
 
-        // 创建游戏窗口
         frame = new JFrame("PvP Game - Word Guess");
         frame.setSize(600, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
-        // 添加状态标签
         statusLabel = new JLabel("Waiting for other player...");
         statusLabel.setBounds(50, 35, 400, 30);
         frame.add(statusLabel);
 
-        // 添加输出文本区域
+        timerLabel = new JLabel("Time: 0 s");
+        timerLabel.setBounds(450, 35, 100, 30);
+        frame.add(timerLabel);
+
         outputArea = new JTextArea();
         outputArea.setBounds(50, 70, 500, 200);
         outputArea.setEditable(false);
@@ -45,13 +48,11 @@ public class PvPGameUI {
         remindLabel.setBounds(50, 270, 300, 30);
         frame.add(remindLabel);
 
-        // 添加输入字段
         inputField = new JTextField();
         inputField.setBounds(50, 300, 400, 30);
-        inputField.setEditable(false); // 初始化时设置为不可编辑，等待回合时可编辑
+        inputField.setEditable(false);
         frame.add(inputField);
 
-        // 输入框监听器，当用户按下回车时
         inputField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -59,8 +60,8 @@ public class PvPGameUI {
                     synchronized (PvPGameUI.this) {
                         userInput = inputField.getText().trim();
                         inputField.setText("");
-                        client.sendInputToServer(userInput); // 发送用户输入到服务器
-                        inputField.setEditable(false); // 发送完毕后暂时不可编辑，等待对手回合
+                        client.sendInputToServer(userInput);
+                        inputField.setEditable(false);
                     }
                 }
             }
@@ -81,8 +82,21 @@ public class PvPGameUI {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        // 告知客户端启动PvP模式
         client.startPvP();
+    }
+
+    // 启动计时器方法
+    private void startTimer() {
+        startTime = System.currentTimeMillis();
+
+        timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
+                timerLabel.setText("Time: " + elapsedTime + " s");
+            }
+        });
+        timer.start();
     }
 
     // 用于从客户端添加消息到输出区域
@@ -91,16 +105,26 @@ public class PvPGameUI {
             public void run() {
                 outputArea.append(message + "\n");
 
-                // 根据从服务器接收到的消息，更新输入状态
+                // 检查是否接收到“游戏开始”信号
+                if (message.contains("Game start") && !isTimerStarted) {
+                    startTimer(); // 启动计时器
+                    isTimerStarted = true; // 确保计时器只启动一次
+                }
+
                 if (message.contains("Your turn")) {
-                    inputField.setEditable(true); // 轮到当前玩家时可输入
+                    inputField.setEditable(true);
                     statusLabel.setText("Your turn! Enter a letter:");
                 } else if (message.contains("Waiting for opponent...")) {
-                    inputField.setEditable(false); // 对手回合时不可输入
+                    inputField.setEditable(false);
                     statusLabel.setText("Opponent's turn. Please wait...");
                 } else if (message.contains("Game over")) {
                     inputField.setEditable(false);
                     statusLabel.setText("Game finished.");
+                    if (isTimerStarted) {
+                        timer.stop(); // 停止计时器
+                        long totalTime = (System.currentTimeMillis() - startTime) / 1000;
+                        outputArea.append("Game completed in " + totalTime + " seconds.\n");
+                    }
                 }
             }
         });
