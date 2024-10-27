@@ -18,14 +18,18 @@ public class PvPGameUI {
     private long startTime;
     private Timer timer;
     private JLabel timerLabel;
-    private boolean isTimerStarted = false; // 标记计时器是否已启动
+    private boolean isTimerStarted = false;
+
+    // 新增组件
+    private JTextArea chatArea; // 用于显示聊天消息
+    private JTextField chatInputField; // 用于输入聊天消息
 
     public PvPGameUI(Client client) {
         this.client = client;
         client.setGameUI(this);
 
         frame = new JFrame("PvP Game - Word Guess");
-        frame.setSize(600, 500);
+        frame.setSize(800, 600); // 调整窗口大小
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
@@ -67,6 +71,32 @@ public class PvPGameUI {
             }
         });
 
+        // 添加聊天区域
+        JLabel chatLabel = new JLabel("Chat:");
+        chatLabel.setBounds(600, 35, 100, 30);
+        frame.add(chatLabel);
+
+        chatArea = new JTextArea();
+        chatArea.setEditable(false);
+        JScrollPane chatScrollPane = new JScrollPane(chatArea);
+        chatScrollPane.setBounds(600, 70, 150, 400);
+        frame.add(chatScrollPane);
+
+        chatInputField = new JTextField();
+        chatInputField.setBounds(600, 480, 150, 30);
+        frame.add(chatInputField);
+
+        chatInputField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String chatMessage = chatInputField.getText().trim();
+                    chatInputField.setText("");
+                    client.sendChatMessageToServer(chatMessage);
+                }
+            }
+        });
+
         JButton back = new JButton("Back to menu");
         back.setBounds(350, 350, 150, 30);
         frame.add(back);
@@ -100,13 +130,14 @@ public class PvPGameUI {
     }
 
     // 用于从客户端添加消息到输出区域
+    // 用于从客户端添加消息到输出区域
     public void appendToOutput(String message) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 outputArea.append(message + "\n");
 
                 // 检查是否接收到“游戏开始”信号
-                if (message.contains("Game start") && !isTimerStarted) {
+                if (message.contains("Game started") && !isTimerStarted) {
                     startTimer(); // 启动计时器
                     isTimerStarted = true; // 确保计时器只启动一次
                 }
@@ -114,19 +145,26 @@ public class PvPGameUI {
                 if (message.contains("Your turn")) {
                     inputField.setEditable(true);
                     statusLabel.setText("Your turn! Enter a letter:");
-                } else if (message.contains("Waiting for opponent...")) {
+                } else if (message.contains("Waiting for opponent...") || message.contains("Not your turn")) {
                     inputField.setEditable(false);
                     statusLabel.setText("Opponent's turn. Please wait...");
-                } else if (message.contains("Game over")) {
+                } else if (message.contains("Game over") || message.contains("wins")) {
                     inputField.setEditable(false);
                     statusLabel.setText("Game finished.");
                     if (isTimerStarted) {
-                        timer.stop(); // 停止计时器22
+                        timer.stop(); // 停止计时器
                         long totalTime = (System.currentTimeMillis() - startTime) / 1000;
                         outputArea.append("Game completed in " + totalTime + " seconds.\n");
-
                     }
                 }
+            }
+        });
+    }
+    // 用于显示聊天消息
+    public void appendToChat(String message) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                chatArea.append(message + "\n");
             }
         });
     }

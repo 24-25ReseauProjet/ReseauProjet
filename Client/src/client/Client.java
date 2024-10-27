@@ -4,7 +4,7 @@ import Methodes.Authenticator;
 import Servers.ServerTCP;
 import Servers.ServerUDP;
 import UIsOfUsers.PvEGameUI;
-import UIsOfUsers.PvPGameUI; // 添加 PvPGameUI
+import UIsOfUsers.PvPGameUI;
 import UIsOfUsers.ModeChooseUI;
 
 import java.io.IOException;
@@ -19,9 +19,9 @@ public class Client {
     private Authenticator authenticator;
     private ServerTCP serverTCP;
     private PvEGameUI pvEGameUI;
-    private PvPGameUI pvPGameUI; // 修改为 PvPGameUI
+    private PvPGameUI pvPGameUI;
     private ModeChooseUI modeChooseUI;
-    private String username; // 添加 username 成员变量
+    private String username;
 
     public Client() {
         try {
@@ -34,13 +34,20 @@ public class Client {
 
     public void sendInputToServer(String input) {
         if (serverTCP != null) {
-            serverTCP.sendToServer(input);
+            serverTCP.sendToServer("GAME:" + input);
             // 判断当前是否在 PvE 或 PvP 模式，并相应地更新 UI
             if (pvEGameUI != null) {
                 pvEGameUI.appendToOutput("You: " + input);
             } else if (pvPGameUI != null) {
                 pvPGameUI.appendToOutput("You: " + input);
             }
+        }
+    }
+
+    // 发送指定信号（CHAT)到服务器
+    public void sendChatMessageToServer(String message) {
+        if (serverTCP != null) {
+            serverTCP.sendToServer("CHAT:" + message);
         }
     }
 
@@ -88,7 +95,15 @@ public class Client {
                 while (true) {
                     List<String> serverResponses = serverTCP.receiveMessagesFromServer();
                     for (String response : serverResponses) {
-                        pvPGameUI.appendToOutput(response);
+                        if (response.startsWith("CHAT:")) {
+                            String chatMessage = response.substring(5);
+                            pvPGameUI.appendToChat(chatMessage);
+                        } else if (response.startsWith("GAME:")) {
+                            String gameMessage = response.substring(5);
+                            pvPGameUI.appendToOutput(gameMessage);
+                        } else {
+                            pvPGameUI.appendToOutput(response);
+                        }
                     }
                     try {
                         Thread.sleep(50); // 暂停 50ms
