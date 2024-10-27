@@ -129,7 +129,7 @@ public class PvPGameUI {
         timer.start();
     }
 
-    // 用于从客户端添加消息到输出区域
+
     // 用于从客户端添加消息到输出区域
     public void appendToOutput(String message) {
         SwingUtilities.invokeLater(new Runnable() {
