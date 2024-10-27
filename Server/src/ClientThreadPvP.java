@@ -30,10 +30,12 @@ public class ClientThreadPvP extends Thread {
 
     // 处理消息的方法
     private void processMessage(String message, int player) {
+        //玩家叫啥都暂且先叫玩家1玩家2
         PrintWriter outSelf = (player == 0) ? out1 : out2;
         PrintWriter outOther = (player == 0) ? out2 : out1;
         String playerName = (player == 0) ? "Player 1" : "Player 2";
 
+        //消息按不同种类进行区分逻辑处理
         if (message.startsWith("CHAT:")) {
             String chatMessage = message.substring(5);
             outOther.println("CHAT:" + playerName + ": " + chatMessage);
