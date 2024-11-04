@@ -34,6 +34,13 @@ public class Client {
 
     public void sendInputToServer(String input) {
         if (serverTCP != null) {
+            serverTCP.sendToServer(input);
+            pvEGameUI.appendToOutput("You: " + input);
+        }
+    }
+
+    public void sendInputToServerPvP(String input) {
+        if (serverTCP != null) {
             serverTCP.sendToServer("GAME:" + input);//GAME是用来让信息进入游戏逻辑而不是聊天逻辑的
             // 判断当前是否在 PvE 或 PvP 模式，并相应地更新 UI
             if (pvEGameUI != null) {

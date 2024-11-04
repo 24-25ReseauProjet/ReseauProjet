@@ -64,7 +64,7 @@ public class PvPGameUI {
                     synchronized (PvPGameUI.this) {
                         userInput = inputField.getText().trim();
                         inputField.setText("");
-                        client.sendInputToServer(userInput);
+                        client.sendInputToServerPvP(userInput);
                         inputField.setEditable(false);
                     }
                 }
