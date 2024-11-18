@@ -76,27 +76,45 @@ public class GameServer {
 
     // 添加玩家到PvP队列并尝试匹配
     private void addPlayerToPvPQueue(Socket clientSocket) {
-        pvpQueue.add(clientSocket);
-        if (pvpQueue.size() >= 2) {
-            Socket player1 = pvpQueue.poll();
-            Socket player2 = pvpQueue.poll();
 
-            // 启动PvP游戏实例
-            GamePvP gamePvP = new GamePvP(getRandomWord());
-            ClientThreadPvP clientThreadPvP = new ClientThreadPvP(player1, player2, gamePvP);
-            threadPool.execute(clientThreadPvP);
-
-            System.out.println("Starting PvP game between two players...");
-        } else {
-            // 如果只有一个玩家，发送等待信息
-            try {
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                out.println("Waiting for other player...");
-            } catch (IOException e) {
-                System.out.println("Error sending waiting message to client: " + e.getMessage());
+        try {
+            if (clientSocket.isClosed() || !clientSocket.isConnected()) {
+                System.out.println("Socket is invalid. Removing from queue.");
+                return;
             }
+            pvpQueue.add(clientSocket);
+            if (pvpQueue.size() >= 2) {
+                Socket player1 = pvpQueue.poll();
+                Socket player2 = pvpQueue.poll();
+
+                if (player1.isClosed() || !player1.isConnected()) {
+                    System.out.println("Player 1 disconnected. Returning Player 2 to queue.");
+                    pvpQueue.add(player2);
+                    return;
+                }
+                if (player2.isClosed() || !player2.isConnected()) {
+                    System.out.println("Player 2 disconnected. Returning Player 1 to queue.");
+                    pvpQueue.add(player1);
+                    return;
+                }
+
+                // 启动PvP游戏实例
+                GamePvP gamePvP = new GamePvP(getRandomWord());
+                ClientThreadPvP clientThreadPvP = new ClientThreadPvP(player1, player2, gamePvP);
+                threadPool.execute(clientThreadPvP);
+
+                System.out.println("Starting PvP game between two players...");
+            } else {
+                    //如果只有一个玩家，发送等待信息
+                    PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                    out.println("Waiting for other player...");
+            }
+        } catch (IOException e) {
+            System.out.println("Error managing PvP queue: " + e.getMessage());
         }
+
     }
+
 
     private String[] parseClientMessage(Socket socket) {
         try {
