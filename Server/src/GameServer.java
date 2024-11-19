@@ -32,89 +32,100 @@ public class GameServer {
         while (true) {
             try {
                 Socket clientSocket = serverSocket.accept();
-                String clientAddress = clientSocket.getInetAddress().toString();
-                System.out.println("New client connected: " + clientAddress);
+                System.out.println("New client connected: " + clientSocket.getInetAddress());
 
                 String[] userInfo = parseClientMessage(clientSocket);
                 if (userInfo != null) {
                     String username = userInfo[0];
                     String modeChoose = userInfo[1];
 
-                    if (AuthServer.isAuthenticated(username)) {
-                        System.out.println("User " + username + " is authenticated. Starting game.");
-
-                        switch (modeChoose) {
-                            case "PvP":
-                                System.out.println("PvP mode selected for user: " + username);
-                                addPlayerToPvPQueue(clientSocket); // 添加玩家到PvP队列
-                                break;
-                            case "PvE":
-                                System.out.println("PvE mode selected for user: " + username);
-                                GamePvE gamePvE = new GamePvE(getRandomWord());
-                                ClientThreadPvE clientThreadPvE = new ClientThreadPvE(clientSocket, gamePvE);
-                                threadPool.execute(clientThreadPvE);
-                                break;
-                            default:
-                                System.out.println("Invalid mode selected: " + modeChoose);
-                                clientSocket.close();
-                                break;
-                        }
-                    } else {
-                        System.out.println("Unauthorized access attempt from " + clientAddress);
-                        clientSocket.close();
-                    }
+                    handleClientMode(clientSocket, username, modeChoose);
                 } else {
                     System.out.println("Failed to parse client message or invalid message format.");
                     clientSocket.close();
                 }
-
             } catch (IOException e) {
                 System.out.println("Error accepting client connection: " + e.getMessage());
             }
         }
     }
 
-    // 添加玩家到PvP队列并尝试匹配
-    private void addPlayerToPvPQueue(Socket clientSocket) {
-
+    private void handleClientMode(Socket clientSocket, String username, String mode) {
+        PrintWriter out = null;
         try {
-            if (clientSocket.isClosed() || !clientSocket.isConnected()) {
-                System.out.println("Socket is invalid. Removing from queue.");
-                return;
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+        } catch (IOException e) {
+            System.out.println("Error setting up client output: " + e.getMessage());
+        }
+
+        if (AuthServer.isAuthenticated(username)) {
+            switch (mode) {
+                case "PvP":
+                    out.println("MODE_CONFIRMED:PvP");
+                    addPlayerToPvPQueue(clientSocket);
+                    break;
+                case "PvE":
+                    out.println("MODE_CONFIRMED:PvE");
+                    startPvEGame(clientSocket);
+                    break;
+                default:
+                    out.println("ERROR: Invalid mode.");
+                    break;
             }
+        } else {
+            out.println("ERROR: Authentication failed.");
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                System.out.println("Error closing unauthenticated socket: " + e.getMessage());
+            }
+        }
+    }
+
+    private void startPvEGame(Socket clientSocket) {
+        GamePvE gamePvE = new GamePvE(getRandomWord());
+        ClientThreadPvE clientThreadPvE = new ClientThreadPvE(clientSocket, gamePvE);
+        threadPool.execute(clientThreadPvE);
+    }
+
+    private void addPlayerToPvPQueue(Socket clientSocket) {
+        if (validateSocket(clientSocket)) {
             pvpQueue.add(clientSocket);
+
             if (pvpQueue.size() >= 2) {
                 Socket player1 = pvpQueue.poll();
                 Socket player2 = pvpQueue.poll();
 
-                if (player1.isClosed() || !player1.isConnected()) {
-                    System.out.println("Player 1 disconnected. Returning Player 2 to queue.");
-                    pvpQueue.add(player2);
-                    return;
+                if (validateSocket(player1) && validateSocket(player2)) {
+                    GamePvP gamePvP = new GamePvP(getRandomWord());
+                    ClientThreadPvP clientThreadPvP = new ClientThreadPvP(player1, player2, gamePvP);
+                    threadPool.execute(clientThreadPvP);
+                    System.out.println("PvP game started between two players.");
+                } else {
+                    if (validateSocket(player1)) pvpQueue.add(player1);
+                    if (validateSocket(player2)) pvpQueue.add(player2);
                 }
-                if (player2.isClosed() || !player2.isConnected()) {
-                    System.out.println("Player 2 disconnected. Returning Player 1 to queue.");
-                    pvpQueue.add(player1);
-                    return;
-                }
-
-                // 启动PvP游戏实例
-                GamePvP gamePvP = new GamePvP(getRandomWord());
-                ClientThreadPvP clientThreadPvP = new ClientThreadPvP(player1, player2, gamePvP);
-                threadPool.execute(clientThreadPvP);
-
-                System.out.println("Starting PvP game between two players...");
             } else {
-                    //如果只有一个玩家，发送等待信息
-                    PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                    out.println("Waiting for other player...");
+                notifyPlayerWait(clientSocket);
             }
-        } catch (IOException e) {
-            System.out.println("Error managing PvP queue: " + e.getMessage());
+        } else {
+            System.out.println("Invalid socket. Skipping client.");
         }
-
     }
 
+
+    private boolean validateSocket(Socket socket) {
+        return socket != null && !socket.isClosed() && socket.isConnected();
+    }
+
+    private void notifyPlayerWait(Socket clientSocket) {
+        try {
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            out.println("Waiting for another player...");
+        } catch (IOException e) {
+            System.out.println("Error sending wait message: " + e.getMessage());
+        }
+    }
 
     private String[] parseClientMessage(Socket socket) {
         try {
@@ -134,7 +145,6 @@ public class GameServer {
         return null;
     }
 
-    // 从预定义的单词列表中随机选择一个单词
     private String getRandomWord() {
         Random random = new Random();
         return WORDS[random.nextInt(WORDS.length)];

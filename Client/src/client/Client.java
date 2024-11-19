@@ -22,6 +22,7 @@ public class Client {
     private PvPGameUI pvPGameUI;
     private ModeChooseUI modeChooseUI;
     private String username;
+    private Thread messageHandlerThread; // 新增：用于管理消息处理线程
 
     public Client() {
         try {
@@ -35,23 +36,21 @@ public class Client {
     public void sendInputToServer(String input) {
         if (serverTCP != null) {
             serverTCP.sendToServer(input);
-            pvEGameUI.appendToOutput("You: " + input);
+            if (pvEGameUI != null) {
+                pvEGameUI.appendToOutput("You: " + input);
+            }
         }
     }
 
     public void sendInputToServerPvP(String input) {
         if (serverTCP != null) {
-            serverTCP.sendToServer("GAME:" + input);//GAME是用来让信息进入游戏逻辑而不是聊天逻辑的
-            // 判断当前是否在 PvE 或 PvP 模式，并相应地更新 UI
-            if (pvEGameUI != null) {
-                pvEGameUI.appendToOutput("You: " + input);
-            } else if (pvPGameUI != null) {
+            serverTCP.sendToServer("GAME:" + input);
+            if (pvPGameUI != null) {
                 pvPGameUI.appendToOutput("You: " + input);
             }
         }
     }
 
-    // 发送指定信号（CHAT)到服务器
     public void sendChatMessageToServer(String message) {
         if (serverTCP != null) {
             serverTCP.sendToServer("CHAT:" + message);
@@ -64,72 +63,91 @@ public class Client {
     }
 
     public void startPvE() {
-        try {
-            Socket tcpSocket = new Socket(SERVER_ADDRESS, GAME_SERVER_PORT);
-            tcpSocket.setSoTimeout(3000);
-            pvEGameUI.appendToOutput("Connected to game server: " + SERVER_ADDRESS + ": " + GAME_SERVER_PORT);
-            serverTCP = new ServerTCP(tcpSocket);
-            serverTCP.sendToServer("MODE:" + username + ":PvE");
+        resetConnection();  // 确保释放旧连接
+        connectToServer("MODE:" + username + ":PvE");
 
-            new Thread(() -> {
-                while (true) {
-                    List<String> serverResponses = serverTCP.receiveMessagesFromServer();
-                    for (String response : serverResponses) {
-                        pvEGameUI.appendToOutput(response);
-                    }
-                    try {
-                        Thread.sleep(50); // 暂停 50ms
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            }).start();
-
-        } catch (IOException e) {
-            pvEGameUI.appendToOutput("Error connecting to game server: " + e.getMessage());
-        }
+        // 启动新的消息处理线程
+        startMessageHandler(() -> handleServerMessages(pvEGameUI));
     }
 
     public void startPvP() {
+        resetConnection();  // 确保释放旧连接
+        connectToServer("MODE:" + username + ":PvP");
+
+        // 启动新的消息处理线程
+        startMessageHandler(() -> handleServerMessages(pvPGameUI));
+    }
+
+    private void connectToServer(String modeMessage) {
         try {
             Socket tcpSocket = new Socket(SERVER_ADDRESS, GAME_SERVER_PORT);
-            tcpSocket.setSoTimeout(3000);
-            pvPGameUI.appendToOutput("Connected to game server: " + SERVER_ADDRESS + ": " + GAME_SERVER_PORT);
             serverTCP = new ServerTCP(tcpSocket);
-            serverTCP.sendToServer("MODE:" + username + ":PvP");
-
-            new Thread(() -> {
-                while (true) {
-                    List<String> serverResponses = serverTCP.receiveMessagesFromServer();
-                    for (String response : serverResponses) {
-                        if (response.startsWith("CHAT:")) {
-                            String chatMessage = response.substring(5);
-                            pvPGameUI.appendToChat(chatMessage);
-                        } else if (response.startsWith("GAME:")) {
-                            String gameMessage = response.substring(5);
-                            pvPGameUI.appendToOutput(gameMessage);
-                        } else {
-                            pvPGameUI.appendToOutput(response);
-                        }
-                    }
-                    try {
-                        Thread.sleep(50); // 暂停 50ms
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            }).start();
+            serverTCP.sendToServer(modeMessage);
         } catch (IOException e) {
-            pvPGameUI.appendToOutput("Error in startPvP: " + e.getMessage());
+            if (pvEGameUI != null) {
+                pvEGameUI.appendToOutput("Connection error: " + e.getMessage());
+            } else if (pvPGameUI != null) {
+                pvPGameUI.appendToOutput("Connection error: " + e.getMessage());
+            }
         }
     }
 
-    // 设置 PvE 游戏的 UI
+    private void handleServerMessages(Object gameUI) {
+        while (!Thread.currentThread().isInterrupted()) {  // 检查线程中断状态
+            if (serverTCP == null) break;  // 避免空指针异常
+            List<String> serverResponses = serverTCP.receiveMessagesFromServer();
+            for (String response : serverResponses) {
+                if (gameUI instanceof PvEGameUI) {
+                    ((PvEGameUI) gameUI).appendToOutput(response);
+                } else if (gameUI instanceof PvPGameUI) {
+                    if (response.startsWith("CHAT:")) {
+                        ((PvPGameUI) gameUI).appendToChat(response.substring(5));
+                    } else {
+                        ((PvPGameUI) gameUI).appendToOutput(response);
+                    }
+                }
+            }
+
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();  // 恢复中断状态
+                break;
+            }
+        }
+    }
+
+    // 启动新的消息处理线程
+    private void startMessageHandler(Runnable handlerTask) {
+        stopMessageHandler();  // 先停止旧的线程
+        messageHandlerThread = new Thread(handlerTask);
+        messageHandlerThread.start();
+    }
+
+    // 停止消息处理线程
+    private void stopMessageHandler() {
+        if (messageHandlerThread != null && messageHandlerThread.isAlive()) {
+            messageHandlerThread.interrupt();  // 请求线程中断
+            try {
+                messageHandlerThread.join();  // 等待线程终止
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    public void resetConnection() {
+        stopMessageHandler();  // 停止消息处理线程
+        if (serverTCP != null) {
+            serverTCP.close();
+            serverTCP = null;
+        }
+    }
+
     public void setGameUI(PvEGameUI pvEGameUI) {
         this.pvEGameUI = pvEGameUI;
     }
 
-    // 设置 PvP 游戏的 UI
     public void setGameUI(PvPGameUI pvPGameUI) {
         this.pvPGameUI = pvPGameUI;
     }

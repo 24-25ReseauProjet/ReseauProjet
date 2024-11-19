@@ -1,9 +1,10 @@
 package UIsOfUsers;
 
+import client.Client;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import client.Client;
 
 public class ModeChooseUI {
     private JButton ModePvP;
@@ -12,7 +13,7 @@ public class ModeChooseUI {
     private JButton back;
     private JLabel LabelOfRemind;
 
-    public ModeChooseUI(Client client){
+    public ModeChooseUI(Client client) {
         this.client = client;
         client.setModeChooseUI(this);
 
@@ -21,7 +22,7 @@ public class ModeChooseUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
-        LabelOfRemind = new JLabel("Please select your preferred mode :");
+        LabelOfRemind = new JLabel("Please select your preferred mode:");
         LabelOfRemind.setBounds(50, 40, 300, 30);
         frame.add(LabelOfRemind);
 
@@ -32,12 +33,12 @@ public class ModeChooseUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new PvPGameUI(client); // 启动 PvP 游戏界面
+                new PvPGameUI(client);
             }
         });
 
         ModePvE = new JButton("Mode PvE");
-        ModePvE.setBounds(230,80,100,100);
+        ModePvE.setBounds(230, 80, 100, 100);
         frame.add(ModePvE);
         ModePvE.addActionListener(new ActionListener() {
             @Override
@@ -48,7 +49,7 @@ public class ModeChooseUI {
         });
 
         back = new JButton("Log out");
-        back.setBounds(220,220,150,30);
+        back.setBounds(220, 220, 150, 30);
         frame.add(back);
 
         back.addActionListener(new ActionListener() {
@@ -63,8 +64,8 @@ public class ModeChooseUI {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args){
-        Client client1=new Client();
+    public static void main(String[] args) {
+        Client client1 = new Client();
         new ModeChooseUI(client1);
     }
 }
