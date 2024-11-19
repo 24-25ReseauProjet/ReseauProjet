@@ -87,6 +87,10 @@ public class ClientThreadPvP extends Thread {
                     processMessage(message2, 1);
                 }
 
+                if (game.isWon()) {
+                    break; // 游戏结束时退出循环
+                }
+
                 // 这里需要暂停一下，避免无限循环占用CPU
                 try {
                     Thread.sleep(50); // 暂停50ms
@@ -105,9 +109,23 @@ public class ClientThreadPvP extends Thread {
             try {
                 player1Socket.close();
                 player2Socket.close();
+                cleanupResources();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void cleanupResources() {
+        try {
+            if (player1Socket != null) player1Socket.close();
+            if (player2Socket != null) player2Socket.close();
+            if (in1 != null) in1.close();
+            if (in2 != null) in2.close();
+            if (out1 != null) out1.close();
+            if (out2 != null) out2.close();
+        } catch (IOException e) {
+            System.out.println("Error closing resources: " + e.getMessage());
         }
     }
 }

@@ -42,6 +42,7 @@ public class ClientThreadPvE extends Thread {
                 if (in != null) in.close();
                 if (out != null) out.close();
                 if (clientSocket != null && !clientSocket.isClosed()) clientSocket.close();
+                cleanupResources();
             } catch (IOException e) {
                 System.out.println("Error closing threads: " + e.getMessage());
             }
@@ -52,5 +53,15 @@ public class ClientThreadPvE extends Thread {
         String initialState = gamePvE.getCurrentState();
         int remainingAttempts = gamePvE.getRemainingAttempts();
         out.println("Game started! Current state: " + initialState + ". Remaining attempts: " + remainingAttempts);
+    }
+
+    private void cleanupResources() {
+        try {
+            if (clientSocket != null) clientSocket.close();
+            if (in != null) in.close();
+            if (out != null) out.close();
+        } catch (IOException e) {
+            System.out.println("Error closing resources: " + e.getMessage());
+        }
     }
 }
