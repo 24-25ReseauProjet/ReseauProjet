@@ -1,6 +1,7 @@
 package client;
 
 import Methodes.Authenticator;
+import Methodes.SaveMessages;
 import Servers.ServerTCP;
 import Servers.ServerUDP;
 import UIsOfUsers.PvEGameUI;
@@ -23,6 +24,7 @@ public class Client {
     private ModeChooseUI modeChooseUI;
     private String username;
     private Thread messageHandlerThread; // 新增：用于管理消息处理线程
+    private SaveMessages saveMessages = new SaveMessages();
 
     public Client() {
         try {
@@ -99,11 +101,13 @@ public class Client {
             for (String response : serverResponses) {
                 if (gameUI instanceof PvEGameUI) {
                     ((PvEGameUI) gameUI).appendToOutput(response);
+                    saveMessages.saveMessagePvE(response);
                 } else if (gameUI instanceof PvPGameUI) {
                     if (response.startsWith("CHAT:")) {
                         ((PvPGameUI) gameUI).appendToChat(response.substring(5));
                     } else {
                         ((PvPGameUI) gameUI).appendToOutput(response);
+                        saveMessages.saveMessagePvP(response);
                     }
                 }
             }
