@@ -1,5 +1,6 @@
 package UIsOfUsers;
 
+import Methodes.Chronometre;
 import client.Client;
 
 import javax.swing.*;
@@ -21,6 +22,7 @@ public class PvEGameUI {
     private long startTime;
     private Timer timer;
     private JLabel timerLabel;
+    private Chronometre chronometre;
 
     public PvEGameUI(Client client) {
         this.client = client;
@@ -41,6 +43,8 @@ public class PvEGameUI {
         timerLabel = new JLabel("Time: 0 s");
         timerLabel.setBounds(450, 35, 100, 30);
         frame.add(timerLabel);
+
+        chronometre = new Chronometre(timerLabel);
 
         // 添加输出文本区域
         outputArea = new JTextArea();
@@ -79,12 +83,12 @@ public class PvEGameUI {
         startGameButton = new JButton("Restart Game");
         startGameButton.setBounds(50, 350, 150, 30);
         frame.add(startGameButton);
-
         startGameButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 statusLabel.setText("Game restarted...");
                 outputArea.setText(""); // 清空输出区域
-                startTimer(); // 重新启动计时器
+                chronometre.reset(); // 重置计时器
+                chronometre.start(); // 启动计时器
                 client.startPvE(); // 重新启动游戏逻辑
             }
         });
@@ -93,7 +97,6 @@ public class PvEGameUI {
         back = new JButton("Back to menu");
         back.setBounds(350, 350, 150, 30);
         frame.add(back);
-
         back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,53 +108,36 @@ public class PvEGameUI {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        // 启动计时器
-        startTimer();
-
-        // 开始 PvE 游戏
+        //chronometre.start();
         client.startPvE();
-    }
-
-    // 启动计时器方法
-    private void startTimer() {
-        if (timer != null) {
-            timer.stop(); // 如果计时器已经存在，先停止它
-        }
-
-        startTime = System.currentTimeMillis();
-
-        timer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
-                timerLabel.setText("Time: " + elapsedTime + " s");
-            }
-        });
-        timer.start();
     }
 
     // 用于从客户端添加消息到输出区域
     public void appendToOutput(String message) {
-        SwingUtilities.invokeLater(new Runnable() {
+            SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 outputArea.append(message + "\n");
 
                 // 根据从服务器接收到的消息，检查游戏是否结束
-                if (message.contains("Game over")) {
+                if (chronometre.isStoped()==true) {
                     inputField.setEditable(false);
                     statusLabel.setText("Game finished.");
-
                     // 停止计时器并显示完成时间
-                    timer.stop();
-                    long totalTime = (System.currentTimeMillis() - startTime) / 1000;
-                    outputArea.append("Game completed in " + totalTime + " seconds.\n");
+                    //chronometre.stop();
+                    long totalTime = chronometre.getPastedTime();
+                    outputArea.append("And game completed in " + totalTime + " seconds.\n");
                 }
             }
         });
     }
 
-    public static void main(String[] args) {
-        Client client1 = new Client();
-        new PvEGameUI(client1);
+    public Chronometre getChronometre() {
+        return chronometre;
     }
+
+
+//    public static void main(String[] args) {
+//        Client client1 = new Client();
+//        new PvEGameUI(client1);
+//    }
 }

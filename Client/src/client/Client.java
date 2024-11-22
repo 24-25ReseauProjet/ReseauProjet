@@ -1,6 +1,7 @@
 package client;
 
 import Methodes.Authenticator;
+import Methodes.Chronometre;
 import Methodes.SaveMessages;
 import Servers.ServerTCP;
 import Servers.ServerUDP;
@@ -25,6 +26,7 @@ public class Client {
     private String username;
     private Thread messageHandlerThread; // 新增：用于管理消息处理线程
     private SaveMessages saveMessages = new SaveMessages();
+    private Chronometre chronometre;
 
     public Client() {
         try {
@@ -100,12 +102,18 @@ public class Client {
             List<String> serverResponses = serverTCP.receiveMessagesFromServer();
             for (String response : serverResponses) {
                 if (gameUI instanceof PvEGameUI) {
-                    ((PvEGameUI) gameUI).appendToOutput(response);
-                    saveMessages.saveMessagePvE(response);
+                    if(response.startsWith("CHRONOMETRE:")){
+                        handleChronometreMessage(response,gameUI);
+                    }else {
+                        ((PvEGameUI) gameUI).appendToOutput(response);
+                        saveMessages.saveMessagePvE(response);
+                    }
                 } else if (gameUI instanceof PvPGameUI) {
                     if (response.startsWith("CHAT:")) {
                         ((PvPGameUI) gameUI).appendToChat(response.substring(5));
-                    } else {
+                    } else if(response.startsWith("CHRONOMETRE:")){
+                        ((PvPGameUI) gameUI).appendToOutput(response);////////////////////////////
+                    }else{
                         ((PvPGameUI) gameUI).appendToOutput(response);
                         saveMessages.saveMessagePvP(response);
                     }
@@ -137,6 +145,32 @@ public class Client {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
+        }
+    }
+
+    public void handleChronometreMessage(String message,Object gameUI){
+        if (!(gameUI instanceof PvEGameUI || gameUI instanceof PvPGameUI)) {
+            return;
+        }
+
+        Chronometre chronometre = null;
+
+        if (gameUI instanceof PvEGameUI) {
+            chronometre = ((PvEGameUI) gameUI).getChronometre();
+        } else if (gameUI instanceof PvPGameUI) {
+            chronometre = ((PvPGameUI) gameUI).getChronometre();
+        }
+
+        if (chronometre == null) {
+            return;
+        }
+
+        if (message.equals("CHRONOMETRE:START")) {
+            chronometre.start();
+        } else if (message.equals("CHRONOMETRE:STOP")) {
+            chronometre.stop();
+        } else if (message.equals("CHRONOMETRE:RESET")) {
+            chronometre.reset();
         }
     }
 

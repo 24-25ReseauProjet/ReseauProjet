@@ -40,7 +40,7 @@ public class GamePvE {
         }
 
         if(isWon()){
-            return "Congratulations! You've guessed the word: " + wordToGuess;
+            return "Congratulations! You've guessed the word: " + wordToGuess+" and - Game over!.";
         }
 
         if (foundMatch) {

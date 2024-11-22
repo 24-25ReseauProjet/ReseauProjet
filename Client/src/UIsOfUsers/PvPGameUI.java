@@ -1,5 +1,6 @@
 package UIsOfUsers;
 
+import Methodes.Chronometre;
 import client.Client;
 
 import javax.swing.*;
@@ -19,6 +20,7 @@ public class PvPGameUI {
     private Timer timer;
     private JLabel timerLabel;
     private boolean isTimerStarted = false;
+    private Chronometre chronometre;
 
     // 新增组件
     private JTextArea chatArea; // 用于显示聊天消息
@@ -168,4 +170,9 @@ public class PvPGameUI {
             }
         });
     }
+
+    public Chronometre getChronometre() {
+        return chronometre;
+    }
+
 }

@@ -22,14 +22,15 @@ public class ClientThreadPvE extends Thread {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
 
             sendInitialGameState();
-
+            //
             String clientInput;
             while ((clientInput = in.readLine()) != null) {
                 String response = gamePvE.processInput(clientInput);
                 out.println(response);
 
                 if (gamePvE.isWon() || gamePvE.isLose()) {
-                    break;  // 游戏结束，跳出循环
+                    out.println("CHRONOMETRE:STOP");
+                    break;
                 }
             }
         } catch (IOException e) {
@@ -42,6 +43,7 @@ public class ClientThreadPvE extends Thread {
     private void sendInitialGameState() {
         out.println("Game started! Current state: " + gamePvE.getCurrentState() +
                 ". Remaining attempts: " + gamePvE.getRemainingAttempts());
+        out.println("CHRONOMETRE:START");
     }
 
     private void cleanupResources() {

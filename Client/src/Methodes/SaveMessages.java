@@ -7,8 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SaveMessages {
-    private static final String HISTORY_FILE = "PvEHistory";
-    private static final String History_PvP_FILE = "PvPHistory";
+    private static final String HISTORY_FILE = "PvEHistory.txt";
+    private static final String History_PvP_FILE = "PvPHistory.txt";
 
     public synchronized void saveMessagePvE(String message){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(HISTORY_FILE, true))) {
