@@ -7,8 +7,6 @@ import java.util.Map;
 public class UserDataManager {
     private static final String USER_DATA_FILE = "user_data.txt"; // 用户数据文件
 
-
-    // 注册用户并保存到文件
     public boolean register(String username, String password) {
         Map<String, String> users = loadUserData();
 
@@ -17,13 +15,11 @@ public class UserDataManager {
             return false;
         }
 
-        // 将新用户信息保存到文件
         users.put(username, password);
         saveUserData(users);
         return true;
     }
 
-    // 加载用户数据
     private Map<String, String> loadUserData() {
         Map<String, String> users = new HashMap<>();
 
@@ -42,7 +38,6 @@ public class UserDataManager {
         return users;
     }
 
-    // 保存用户数据
     private void saveUserData(Map<String, String> users) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(USER_DATA_FILE))) {
             for (Map.Entry<String, String> entry : users.entrySet()) {

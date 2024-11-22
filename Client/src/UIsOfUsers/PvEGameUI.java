@@ -19,8 +19,6 @@ public class PvEGameUI {
     private JButton back;
     private Client client;
     private String userInput;
-    private long startTime;
-    private Timer timer;
     private JLabel timerLabel;
     private Chronometre chronometre;
 
@@ -28,25 +26,21 @@ public class PvEGameUI {
         this.client = client;
         client.setGameUI(this);
 
-        // 创建游戏窗口
         frame = new JFrame("PvE Game - Word Guess");
         frame.setSize(600, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
-        // 添加状态标签
         statusLabel = new JLabel("Game started...");
         statusLabel.setBounds(50, 35, 300, 30);
         frame.add(statusLabel);
 
-        // 添加计时器标签
         timerLabel = new JLabel("Time: 0 s");
         timerLabel.setBounds(450, 35, 100, 30);
         frame.add(timerLabel);
 
         chronometre = new Chronometre(timerLabel);
 
-        // 添加输出文本区域
         outputArea = new JTextArea();
         outputArea.setBounds(50, 70, 500, 200);
         outputArea.setEditable(false);
@@ -54,18 +48,15 @@ public class PvEGameUI {
         scrollPane.setBounds(50, 70, 500, 200);
         frame.add(scrollPane);
 
-        // 添加输入提示标签
         remindLabel = new JLabel("Enter your guess and press Enter:");
         remindLabel.setBounds(50, 270, 300, 30);
         frame.add(remindLabel);
 
-        // 添加输入字段
         inputField = new JTextField();
         inputField.setBounds(50, 300, 400, 30);
-        inputField.setEditable(true); // PvE模式下，玩家可以立即输入
+        inputField.setEditable(true);
         frame.add(inputField);
 
-        // 输入框监听器，当用户按下回车时
         inputField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -73,27 +64,25 @@ public class PvEGameUI {
                     synchronized (PvEGameUI.this) {
                         userInput = inputField.getText().trim();
                         inputField.setText("");
-                        client.sendInputToServer(userInput); // 发送用户输入到服务器
+                        client.sendInputToServer(userInput);
                     }
                 }
             }
         });
 
-        // 添加重新启动游戏按钮
         startGameButton = new JButton("Restart Game");
         startGameButton.setBounds(50, 350, 150, 30);
         frame.add(startGameButton);
         startGameButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 statusLabel.setText("Game restarted...");
-                outputArea.setText(""); // 清空输出区域
-                chronometre.reset(); // 重置计时器
-                chronometre.start(); // 启动计时器
-                client.startPvE(); // 重新启动游戏逻辑
+                outputArea.setText("");
+                chronometre.reset();
+                chronometre.start();
+                client.startPvE();
             }
         });
 
-        // 添加返回主菜单按钮
         back = new JButton("Back to menu");
         back.setBounds(350, 350, 150, 30);
         frame.add(back);
@@ -108,22 +97,17 @@ public class PvEGameUI {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        //chronometre.start();
         client.startPvE();
     }
 
-    // 用于从客户端添加消息到输出区域
     public void appendToOutput(String message) {
             SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 outputArea.append(message + "\n");
 
-                // 根据从服务器接收到的消息，检查游戏是否结束
-                if (chronometre.isStoped()==true) {
+                if (chronometre.isStoped()) {
                     inputField.setEditable(false);
                     statusLabel.setText("Game finished.");
-                    // 停止计时器并显示完成时间
-                    //chronometre.stop();
                     long totalTime = chronometre.getPastedTime();
                     outputArea.append("And game completed in " + totalTime + " seconds.\n");
                 }
@@ -134,10 +118,4 @@ public class PvEGameUI {
     public Chronometre getChronometre() {
         return chronometre;
     }
-
-
-//    public static void main(String[] args) {
-//        Client client1 = new Client();
-//        new PvEGameUI(client1);
-//    }
 }

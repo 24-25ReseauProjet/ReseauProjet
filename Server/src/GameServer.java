@@ -16,7 +16,7 @@ public class GameServer {
     private ServerSocket serverSocket;
     private ExecutorService threadPool;
     private static final String[] WORDS = {"apple", "banana", "orange", "grape", "pineapple"};
-    private Queue<Socket> pvpQueue = new LinkedList<>(); // PvP匹配队列
+    private Queue<Socket> pvpQueue = new LinkedList<>();
 
     public GameServer() {
         try {

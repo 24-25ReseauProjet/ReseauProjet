@@ -17,7 +17,7 @@ public class ModeChooseUI {
         this.client = client;
         client.setModeChooseUI(this);
 
-        JFrame frame = new JFrame("Jeu du perdu");
+        JFrame frame = new JFrame("Jeu du pendu");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);

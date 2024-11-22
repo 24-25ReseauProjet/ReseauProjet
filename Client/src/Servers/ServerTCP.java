@@ -20,11 +20,10 @@ public class ServerTCP {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
             System.out.println("Error setting up connection: " + e.getMessage());
-            cleanupResources(); // 如果初始化失败，立即清理资源
+            cleanupResources();
         }
     }
 
-    // 向服务器发送消息
     public void sendToServer(String message) {
         if (out != null) {
             out.println(message);
@@ -33,11 +32,10 @@ public class ServerTCP {
         }
     }
 
-    // 从服务器接收消息
     public List<String> receiveMessagesFromServer() {
         List<String> messages = new ArrayList<>();
         try {
-            while (in.ready()) { // 当有数据时才读取
+            while (in.ready()) {
                 String message = in.readLine();
                 if (message != null) {
                     messages.add(message);
@@ -45,17 +43,15 @@ public class ServerTCP {
             }
         } catch (IOException e) {
             System.out.println("Error receiving messages from server: " + e.getMessage());
-            cleanupResources(); // 遇到异常时清理资源
+            cleanupResources();
         }
         return messages;
     }
 
-    // 关闭连接并清理资源
     public void close() {
         cleanupResources();
     }
 
-    // 内部资源清理方法
     private void cleanupResources() {
         try {
             if (out != null) {

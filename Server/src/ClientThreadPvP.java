@@ -28,51 +28,65 @@ public class ClientThreadPvP extends Thread {
         }
     }
 
-    // 处理消息的方法
     private void processMessage(String message, int player) {
-        //玩家叫啥都暂且先叫玩家1玩家2
         PrintWriter outSelf = (player == 0) ? out1 : out2;
         PrintWriter outOther = (player == 0) ? out2 : out1;
         String playerName = (player == 0) ? "Player 1" : "Player 2";
 
-        //消息按不同种类进行区分逻辑处理
-        if (message.startsWith("CHAT:")) {
-            String chatMessage = message.substring(5);
-            outOther.println("CHAT:" + playerName + ": " + chatMessage);
-            outSelf.println("CHAT:" + playerName + ": " + chatMessage);
-        } else if (message.startsWith("GAME:")) {
-            String gameInput = message.substring(5);
-            if (game.getPlayerTurn() != player) {
-                outSelf.println("GAME:Not your turn!");
-                return;
-            }
-            String result = game.processInput(gameInput, player);
-            outSelf.println("GAME:" + result);
-            outOther.println("GAME:" + playerName + " guessed: " + gameInput + " - " + game.getCurrentState());
+        String[] parts = message.split(":", 2);
+        String messageType = parts[0]; // 消息类型（例如 "CHAT" 或 "GAME"）
+        String payload = parts.length > 1 ? parts[1] : ""; // 消息内容
 
-            if (game.isWon()) {
-                outSelf.println("GAME:Game over! You win!");
-                outOther.println("GAME:Game over! " + playerName + " wins!");
-            } else {
-                // 通知下一个玩家他们的回合
-                int nextPlayer = game.getPlayerTurn();
-                PrintWriter outNext = (nextPlayer == 0) ? out1 : out2;
-                PrintWriter outWait = (nextPlayer == 0) ? out2 : out1;
-
-                outNext.println("GAME:Your turn! Enter a letter:");
-                outWait.println("GAME:Waiting for opponent...");
+        switch (messageType) {
+            case "CHAT": {
+                String chatMessage = payload;
+                outOther.println("CHAT:" + playerName + ": " + chatMessage);
+                outSelf.println("CHAT:" + playerName + ": " + chatMessage);
+                break;
             }
-        } else {
-            outSelf.println("GAME:Unknown message type.");
+
+            case "GAME": {
+                String gameInput = payload;
+
+                if (game.getPlayerTurn() != player) {
+                    outSelf.println("GAME:Not your turn!");
+                    return;
+                }
+
+                String result = game.processInput(gameInput, player);
+                outSelf.println("GAME:" + result);
+                outOther.println("GAME:" + playerName + " guessed: " + gameInput + " - " + game.getCurrentState());
+
+                if (game.isWon()) {
+                    //outSelf.println("GAME:Game over! You win!");
+                    outOther.println("GAME:Game over! " + playerName + " wins!");
+                } else {
+                    //Next player
+                    int nextPlayer = game.getPlayerTurn();
+                    PrintWriter outNext = (nextPlayer == 0) ? out1 : out2;
+                    PrintWriter outWait = (nextPlayer == 0) ? out2 : out1;
+
+                    outNext.println("GAME:Your turn! Enter a letter:");
+                    outWait.println("GAME:Waiting for opponent...");
+                }
+                break;
+            }
+
+            default: {
+                outSelf.println("GAME:Unknown message type.");
+                break;
+            }
         }
     }
+
 
     @Override
     public void run() {
         out1.println("GAME:Game started! You are Player 1.");
+        out1.println("CHRONOMETRE:START");
         out2.println("GAME:Game started! You are Player 2.");
+        out2.println("CHRONOMETRE:START");
 
-        // 游戏开始时，通知玩家 1 他们的回合
         out1.println("GAME:Your turn! Enter a letter:");
         out2.println("GAME:Waiting for opponent...");
 
@@ -88,19 +102,15 @@ public class ClientThreadPvP extends Thread {
                 }
 
                 if (game.isWon()) {
-                    break; // 游戏结束时退出循环
+                    out1.println("CHRONOMETRE:STOP");
+                    out2.println("CHRONOMETRE:STOP");
+                    break;
                 }
 
-                // 这里需要暂停一下，避免无限循环占用CPU
                 try {
-                    Thread.sleep(50); // 暂停50ms
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                }
-
-                // 检查游戏是否结束
-                if (game.isWon()) {
-                    break;
                 }
             }
         } catch (IOException e) {

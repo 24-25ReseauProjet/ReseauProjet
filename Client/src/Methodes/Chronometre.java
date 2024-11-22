@@ -13,6 +13,7 @@ public class Chronometre {
     private long pastedTime;
     private JLabel timerLabel;
     private boolean isStoped=false;
+    private boolean isStarted = false;
 
     public Chronometre(JLabel timerLabel){
         this.timerLabel=timerLabel;
@@ -20,7 +21,7 @@ public class Chronometre {
 
     public void start() {
         if (timer != null) {
-            timer.stop(); // 如果计时器已经存在，先停止它
+            timer.stop();
         }
 
         startTime = System.currentTimeMillis();
@@ -33,6 +34,7 @@ public class Chronometre {
             }
         });
         timer.start();
+        isStarted=true;
     }
 
     public void stop() {
@@ -40,10 +42,6 @@ public class Chronometre {
             timer.stop();
         }
         isStoped = true;
-    }
-
-    public boolean isStoped(){
-        return isStoped;
     }
 
     public void reset(){
@@ -58,5 +56,13 @@ public class Chronometre {
     public void setPastedTime(int seconds) {
         this.pastedTime = seconds;
         timerLabel.setText("Time: " + seconds + " s");
+    }
+
+    public boolean isStoped() {
+        return isStoped;
+    }
+
+    public boolean isStarted(){
+        return isStarted;
     }
 }

@@ -15,8 +15,8 @@ import java.util.List;
 
 public class Client {
     private static final String SERVER_ADDRESS = "127.0.0.1";
-    private static final int AUTH_SERVER_PORT = 54321; // UDP认证服务器端口
-    private static final int GAME_SERVER_PORT = 12345; // 游戏逻辑服务器TCP端口
+    private static final int AUTH_SERVER_PORT = 54321;
+    private static final int GAME_SERVER_PORT = 12345;
     private ServerUDP serverUDP;
     private Authenticator authenticator;
     private ServerTCP serverTCP;
@@ -24,7 +24,7 @@ public class Client {
     private PvPGameUI pvPGameUI;
     private ModeChooseUI modeChooseUI;
     private String username;
-    private Thread messageHandlerThread; // 新增：用于管理消息处理线程
+    private Thread messageHandlerThread;
     private SaveMessages saveMessages = new SaveMessages();
     private Chronometre chronometre;
 
@@ -67,18 +67,15 @@ public class Client {
     }
 
     public void startPvE() {
-        resetConnection();  // 确保释放旧连接
+        resetConnection();
         connectToServer("MODE:" + username + ":PvE");
 
-        // 启动新的消息处理线程
         startMessageHandler(() -> handleServerMessages(pvEGameUI));
     }
 
     public void startPvP() {
-        resetConnection();  // 确保释放旧连接
+        resetConnection();
         connectToServer("MODE:" + username + ":PvP");
-
-        // 启动新的消息处理线程
         startMessageHandler(() -> handleServerMessages(pvPGameUI));
     }
 
@@ -97,8 +94,8 @@ public class Client {
     }
 
     private void handleServerMessages(Object gameUI) {
-        while (!Thread.currentThread().isInterrupted()) {  // 检查线程中断状态
-            if (serverTCP == null) break;  // 避免空指针异常
+        while (!Thread.currentThread().isInterrupted()) {
+            if (serverTCP == null) break;
             List<String> serverResponses = serverTCP.receiveMessagesFromServer();
             for (String response : serverResponses) {
                 if (gameUI instanceof PvEGameUI) {
@@ -112,7 +109,7 @@ public class Client {
                     if (response.startsWith("CHAT:")) {
                         ((PvPGameUI) gameUI).appendToChat(response.substring(5));
                     } else if(response.startsWith("CHRONOMETRE:")){
-                        ((PvPGameUI) gameUI).appendToOutput(response);////////////////////////////
+                        handleChronometreMessage(response,gameUI);
                     }else{
                         ((PvPGameUI) gameUI).appendToOutput(response);
                         saveMessages.saveMessagePvP(response);
@@ -123,25 +120,24 @@ public class Client {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();  // 恢复中断状态
+                Thread.currentThread().interrupt();
                 break;
             }
         }
     }
 
-    // 启动新的消息处理线程
+
     private void startMessageHandler(Runnable handlerTask) {
-        stopMessageHandler();  // 先停止旧的线程
+        stopMessageHandler();
         messageHandlerThread = new Thread(handlerTask);
         messageHandlerThread.start();
     }
 
-    // 停止消息处理线程
     private void stopMessageHandler() {
         if (messageHandlerThread != null && messageHandlerThread.isAlive()) {
-            messageHandlerThread.interrupt();  // 请求线程中断
+            messageHandlerThread.interrupt();
             try {
-                messageHandlerThread.join();  // 等待线程终止
+                messageHandlerThread.join();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -169,13 +165,11 @@ public class Client {
             chronometre.start();
         } else if (message.equals("CHRONOMETRE:STOP")) {
             chronometre.stop();
-        } else if (message.equals("CHRONOMETRE:RESET")) {
-            chronometre.reset();
         }
     }
 
     public void resetConnection() {
-        stopMessageHandler();  // 停止消息处理线程
+        stopMessageHandler();
         if (serverTCP != null) {
             serverTCP.close();
             serverTCP = null;

@@ -1,0 +1,249 @@
+[2024-11-22 14:11:02] MODE_CONFIRMED:PvP
+[2024-11-22 14:11:02] Waiting for another player...
+[2024-11-22 14:11:17] GAME:Game started! You are Player 1.
+[2024-11-22 14:11:17] GAME:Your turn! Enter a letter:
+[2024-11-22 14:11:17] MODE_CONFIRMED:PvP
+[2024-11-22 14:11:17] GAME:Game started! You are Player 2.
+[2024-11-22 14:11:17] GAME:Waiting for opponent...
+[2024-11-22 14:11:23] GAME:Player 1 guessed: a - __a__
+[2024-11-22 14:11:23] GAME:Waiting for opponent...
+[2024-11-22 14:11:23] GAME:Good guess! Current state: __a__
+[2024-11-22 14:11:23] GAME:Your turn! Enter a letter:
+[2024-11-22 14:11:28] GAME:Player 1 guessed: o - __a__
+[2024-11-22 14:11:28] GAME:Your turn! Enter a letter:
+[2024-11-22 14:11:28] GAME:Wrong guess! Current state: __a__. Next player's turn.
+[2024-11-22 14:11:28] GAME:Waiting for opponent...
+[2024-11-22 14:11:31] GAME:Good guess! Current state: g_a__
+[2024-11-22 14:11:31] GAME:Your turn! Enter a letter:
+[2024-11-22 14:11:31] GAME:Player 2 guessed: g - g_a__
+[2024-11-22 14:11:31] GAME:Waiting for opponent...
+[2024-11-22 14:11:32] GAME:Good guess! Current state: gra__
+[2024-11-22 14:11:32] GAME:Your turn! Enter a letter:
+[2024-11-22 14:11:32] GAME:Player 2 guessed: r - gra__
+[2024-11-22 14:11:32] GAME:Waiting for opponent...
+[2024-11-22 14:11:34] GAME:Good guess! Current state: grap_
+[2024-11-22 14:11:34] GAME:Your turn! Enter a letter:
+[2024-11-22 14:11:34] GAME:Player 2 guessed: p - grap_
+[2024-11-22 14:11:34] GAME:Waiting for opponent...
+[2024-11-22 14:11:35] GAME:Congratulations! The word was: grape. Player 2 wins!
+[2024-11-22 14:11:35] GAME:Game over! You win!
+[2024-11-22 14:11:35] GAME:Player 2 guessed: e - grape
+[2024-11-22 14:11:35] GAME:Game over! Player 2 wins!
+[2024-11-22 14:14:22] MODE_CONFIRMED:PvP
+[2024-11-22 14:14:22] Waiting for another player...
+[2024-11-22 14:14:36] GAME:Game started! You are Player 1.
+[2024-11-22 14:14:36] GAME:Your turn! Enter a letter:
+[2024-11-22 14:14:36] MODE_CONFIRMED:PvP
+[2024-11-22 14:14:36] GAME:Game started! You are Player 2.
+[2024-11-22 14:14:36] GAME:Waiting for opponent...
+[2024-11-22 14:14:40] GAME:Good guess! Current state: __a___
+[2024-11-22 14:14:40] GAME:Your turn! Enter a letter:
+[2024-11-22 14:14:40] GAME:Player 1 guessed: a - __a___
+[2024-11-22 14:14:40] GAME:Waiting for opponent...
+[2024-11-22 14:14:41] GAME:Good guess! Current state: o_a___
+[2024-11-22 14:14:41] GAME:Your turn! Enter a letter:
+[2024-11-22 14:14:41] GAME:Player 1 guessed: o - o_a___
+[2024-11-22 14:14:41] GAME:Waiting for opponent...
+[2024-11-22 14:14:42] GAME:Good guess! Current state: ora___
+[2024-11-22 14:14:42] GAME:Your turn! Enter a letter:
+[2024-11-22 14:14:42] GAME:Player 1 guessed: r - ora___
+[2024-11-22 14:14:42] GAME:Waiting for opponent...
+[2024-11-22 14:14:45] GAME:Wrong guess! Current state: ora___. Next player's turn.
+[2024-11-22 14:14:45] GAME:Waiting for opponent...
+[2024-11-22 14:14:45] GAME:Player 1 guessed: q - ora___
+[2024-11-22 14:14:45] GAME:Your turn! Enter a letter:
+[2024-11-22 14:14:49] GAME:Player 2 guessed: n - oran__
+[2024-11-22 14:14:49] GAME:Waiting for opponent...
+[2024-11-22 14:14:49] GAME:Good guess! Current state: oran__
+[2024-11-22 14:14:49] GAME:Your turn! Enter a letter:
+[2024-11-22 14:14:51] GAME:Player 2 guessed: g - orang_
+[2024-11-22 14:14:51] GAME:Waiting for opponent...
+[2024-11-22 14:14:51] GAME:Good guess! Current state: orang_
+[2024-11-22 14:14:51] GAME:Your turn! Enter a letter:
+[2024-11-22 14:14:52] GAME:Player 2 guessed: e - orange
+[2024-11-22 14:14:52] GAME:Game over! Player 2 wins!
+[2024-11-22 14:14:52] GAME:Congratulations! The word was: orange. Player 2 wins!
+[2024-11-22 14:14:52] GAME:Game over! You win!
+[2024-11-22 14:16:15] MODE_CONFIRMED:PvP
+[2024-11-22 14:16:15] Waiting for another player...
+[2024-11-22 14:16:28] GAME:Game started! You are Player 1.
+[2024-11-22 14:16:28] GAME:Your turn! Enter a letter:
+[2024-11-22 14:16:28] MODE_CONFIRMED:PvP
+[2024-11-22 14:16:28] GAME:Game started! You are Player 2.
+[2024-11-22 14:16:28] GAME:Waiting for opponent...
+[2024-11-22 14:16:32] GAME:Good guess! Current state: ____a____
+[2024-11-22 14:16:32] GAME:Player 1 guessed: a - ____a____
+[2024-11-22 14:16:32] GAME:Your turn! Enter a letter:
+[2024-11-22 14:16:32] GAME:Waiting for opponent...
+[2024-11-22 14:16:34] GAME:Good guess! Current state: p___app__
+[2024-11-22 14:16:34] GAME:Player 1 guessed: p - p___app__
+[2024-11-22 14:16:34] GAME:Your turn! Enter a letter:
+[2024-11-22 14:16:34] GAME:Waiting for opponent...
+[2024-11-22 14:16:35] GAME:Good guess! Current state: pi__app__
+[2024-11-22 14:16:35] GAME:Player 1 guessed: i - pi__app__
+[2024-11-22 14:16:35] GAME:Your turn! Enter a letter:
+[2024-11-22 14:16:35] GAME:Waiting for opponent...
+[2024-11-22 14:16:37] GAME:Wrong guess! Current state: pi__app__. Next player's turn.
+[2024-11-22 14:16:37] GAME:Player 1 guessed: q - pi__app__
+[2024-11-22 14:16:37] GAME:Waiting for opponent...
+[2024-11-22 14:16:37] GAME:Your turn! Enter a letter:
+[2024-11-22 14:16:41] GAME:Good guess! Current state: pin_app__
+[2024-11-22 14:16:41] GAME:Your turn! Enter a letter:
+[2024-11-22 14:16:41] GAME:Player 2 guessed: n - pin_app__
+[2024-11-22 14:16:41] GAME:Waiting for opponent...
+[2024-11-22 14:16:43] GAME:Good guess! Current state: pineapp_e
+[2024-11-22 14:16:43] GAME:Player 2 guessed: e - pineapp_e
+[2024-11-22 14:16:43] GAME:Your turn! Enter a letter:
+[2024-11-22 14:16:43] GAME:Waiting for opponent...
+[2024-11-22 14:16:44] GAME:Congratulations! The word was: pineapple. Player 2 wins!
+[2024-11-22 14:16:44] GAME:Player 2 guessed: l - pineapple
+[2024-11-22 14:16:44] GAME:Game over! You win!
+[2024-11-22 14:16:44] GAME:Game over! Player 2 wins!
+[2024-11-22 14:38:35] MODE_CONFIRMED:PvP
+[2024-11-22 14:38:35] Waiting for another player...
+[2024-11-22 14:38:42] GAME:Game started! You are Player 1.
+[2024-11-22 14:38:42] GAME:Your turn! Enter a letter:
+[2024-11-22 14:38:42] MODE_CONFIRMED:PvP
+[2024-11-22 14:38:42] GAME:Game started! You are Player 2.
+[2024-11-22 14:38:42] GAME:Waiting for opponent...
+[2024-11-22 14:38:47] GAME:Good guess! Current state: __a__
+[2024-11-22 14:38:47] GAME:Player 1 guessed: a - __a__
+[2024-11-22 14:38:47] GAME:Your turn! Enter a letter:
+[2024-11-22 14:38:47] GAME:Waiting for opponent...
+[2024-11-22 14:38:48] GAME:Wrong guess! Current state: __a__. Next player's turn.
+[2024-11-22 14:38:48] GAME:Player 1 guessed: t - __a__
+[2024-11-22 14:38:48] GAME:Waiting for opponent...
+[2024-11-22 14:38:48] GAME:Your turn! Enter a letter:
+[2024-11-22 14:38:51] GAME:Good guess! Current state: g_a__
+[2024-11-22 14:38:51] GAME:Player 2 guessed: g - g_a__
+[2024-11-22 14:38:51] GAME:Your turn! Enter a letter:
+[2024-11-22 14:38:51] GAME:Waiting for opponent...
+[2024-11-22 14:38:53] GAME:Good guess! Current state: gra__
+[2024-11-22 14:38:53] GAME:Player 2 guessed: r - gra__
+[2024-11-22 14:38:53] GAME:Your turn! Enter a letter:
+[2024-11-22 14:38:53] GAME:Waiting for opponent...
+[2024-11-22 14:38:54] GAME:Good guess! Current state: grap_
+[2024-11-22 14:38:54] GAME:Player 2 guessed: p - grap_
+[2024-11-22 14:38:54] GAME:Your turn! Enter a letter:
+[2024-11-22 14:38:54] GAME:Waiting for opponent...
+[2024-11-22 14:38:54] GAME:Congratulations! The word was: grape. Player 2 wins!
+[2024-11-22 14:38:54] GAME:Player 2 guessed: e - grape
+[2024-11-22 14:41:19] MODE_CONFIRMED:PvP
+[2024-11-22 14:41:19] Waiting for another player...
+[2024-11-22 14:41:21] GAME:Game started! You are Player 1.
+[2024-11-22 14:41:21] GAME:Your turn! Enter a letter:
+[2024-11-22 14:41:21] MODE_CONFIRMED:PvP
+[2024-11-22 14:41:21] GAME:Game started! You are Player 2.
+[2024-11-22 14:41:21] GAME:Waiting for opponent...
+[2024-11-22 14:41:26] GAME:Good guess! Current state: __a___
+[2024-11-22 14:41:26] GAME:Your turn! Enter a letter:
+[2024-11-22 14:41:26] GAME:Player 1 guessed: a - __a___
+[2024-11-22 14:41:26] GAME:Waiting for opponent...
+[2024-11-22 14:41:28] GAME:Player 1 guessed: o - o_a___
+[2024-11-22 14:41:28] GAME:Waiting for opponent...
+[2024-11-22 14:41:28] GAME:Good guess! Current state: o_a___
+[2024-11-22 14:41:28] GAME:Your turn! Enter a letter:
+[2024-11-22 14:41:28] GAME:Player 1 guessed: r - ora___
+[2024-11-22 14:41:28] GAME:Waiting for opponent...
+[2024-11-22 14:41:28] GAME:Good guess! Current state: ora___
+[2024-11-22 14:41:28] GAME:Your turn! Enter a letter:
+[2024-11-22 14:41:30] GAME:Player 1 guessed: q - ora___
+[2024-11-22 14:41:30] GAME:Your turn! Enter a letter:
+[2024-11-22 14:41:30] GAME:Wrong guess! Current state: ora___. Next player's turn.
+[2024-11-22 14:41:30] GAME:Waiting for opponent...
+[2024-11-22 14:41:33] GAME:Good guess! Current state: oran__
+[2024-11-22 14:41:33] GAME:Your turn! Enter a letter:
+[2024-11-22 14:41:33] GAME:Player 2 guessed: n - oran__
+[2024-11-22 14:41:33] GAME:Waiting for opponent...
+[2024-11-22 14:41:34] GAME:Good guess! Current state: orang_
+[2024-11-22 14:41:34] GAME:Your turn! Enter a letter:
+[2024-11-22 14:41:34] GAME:Player 2 guessed: g - orang_
+[2024-11-22 14:41:34] GAME:Waiting for opponent...
+[2024-11-22 14:41:35] GAME:Congratulations! The word was: orange. Player 2 wins!
+[2024-11-22 14:41:35] GAME:Game over! You win!
+[2024-11-22 14:41:35] GAME:Player 2 guessed: e - orange
+[2024-11-22 14:41:35] GAME:Game over! Player 2 wins!
+[2024-11-22 14:43:34] MODE_CONFIRMED:PvP
+[2024-11-22 14:43:34] Waiting for another player...
+[2024-11-22 14:43:43] GAME:Game started! You are Player 1.
+[2024-11-22 14:43:43] GAME:Your turn! Enter a letter:
+[2024-11-22 14:43:43] MODE_CONFIRMED:PvP
+[2024-11-22 14:43:43] GAME:Game started! You are Player 2.
+[2024-11-22 14:43:43] GAME:Waiting for opponent...
+[2024-11-22 14:43:48] GAME:Good guess! Current state: ____a____
+[2024-11-22 14:43:48] GAME:Your turn! Enter a letter:
+[2024-11-22 14:43:48] GAME:Player 1 guessed: a - ____a____
+[2024-11-22 14:43:48] GAME:Waiting for opponent...
+[2024-11-22 14:43:50] GAME:Good guess! Current state: p___app__
+[2024-11-22 14:43:50] GAME:Your turn! Enter a letter:
+[2024-11-22 14:43:50] GAME:Player 1 guessed: p - p___app__
+[2024-11-22 14:43:50] GAME:Waiting for opponent...
+[2024-11-22 14:43:51] GAME:Wrong guess! Current state: p___app__. Next player's turn.
+[2024-11-22 14:43:51] GAME:Waiting for opponent...
+[2024-11-22 14:43:52] GAME:Player 1 guessed: k - p___app__
+[2024-11-22 14:43:52] GAME:Your turn! Enter a letter:
+[2024-11-22 14:43:54] GAME:Player 2 guessed: j - p___app__
+[2024-11-22 14:43:54] GAME:Your turn! Enter a letter:
+[2024-11-22 14:43:54] GAME:Wrong guess! Current state: p___app__. Next player's turn.
+[2024-11-22 14:43:54] GAME:Waiting for opponent...
+[2024-11-22 14:43:58] GAME:Good guess! Current state: pi__app__
+[2024-11-22 14:43:58] GAME:Your turn! Enter a letter:
+[2024-11-22 14:43:58] GAME:Player 1 guessed: i - pi__app__
+[2024-11-22 14:43:58] GAME:Waiting for opponent...
+[2024-11-22 14:43:59] GAME:Good guess! Current state: pin_app__
+[2024-11-22 14:43:59] GAME:Your turn! Enter a letter:
+[2024-11-22 14:43:59] GAME:Player 1 guessed: n - pin_app__
+[2024-11-22 14:43:59] GAME:Waiting for opponent...
+[2024-11-22 14:44:00] GAME:Good guess! Current state: pineapp_e
+[2024-11-22 14:44:00] GAME:Your turn! Enter a letter:
+[2024-11-22 14:44:00] GAME:Player 1 guessed: e - pineapp_e
+[2024-11-22 14:44:00] GAME:Waiting for opponent...
+[2024-11-22 14:44:01] GAME:Congratulations! The word was: pineapple. Player 1 wins!
+[2024-11-22 14:44:01] GAME:Game over! You win!
+[2024-11-22 14:44:01] GAME:Player 1 guessed: l - pineapple
+[2024-11-22 14:44:01] GAME:Game over! Player 1 wins!
+[2024-11-22 14:47:15] MODE_CONFIRMED:PvP
+[2024-11-22 14:47:15] Waiting for another player...
+[2024-11-22 14:47:21] GAME:Game started! You are Player 1.
+[2024-11-22 14:47:21] GAME:Your turn! Enter a letter:
+[2024-11-22 14:47:21] MODE_CONFIRMED:PvP
+[2024-11-22 14:47:21] GAME:Game started! You are Player 2.
+[2024-11-22 14:47:21] GAME:Waiting for opponent...
+[2024-11-22 14:47:25] GAME:Good guess! Current state: a____
+[2024-11-22 14:47:25] GAME:Your turn! Enter a letter:
+[2024-11-22 14:47:25] GAME:Player 1 guessed: a - a____
+[2024-11-22 14:47:25] GAME:Waiting for opponent...
+[2024-11-22 14:47:26] GAME:Good guess! Current state: app__
+[2024-11-22 14:47:26] GAME:Player 1 guessed: p - app__
+[2024-11-22 14:47:26] GAME:Your turn! Enter a letter:
+[2024-11-22 14:47:26] GAME:Waiting for opponent...
+[2024-11-22 14:47:27] GAME:Player 1 guessed: l - appl_
+[2024-11-22 14:47:27] GAME:Good guess! Current state: appl_
+[2024-11-22 14:47:27] GAME:Your turn! Enter a letter:
+[2024-11-22 14:47:27] GAME:Waiting for opponent...
+[2024-11-22 14:47:28] GAME:Player 1 guessed: e - apple
+[2024-11-22 14:47:28] GAME:Game over! Player 1 wins!
+[2024-11-22 14:47:28] GAME:Congratulations! The word was: apple. Player 1 wins!
+[2024-11-22 14:47:28] GAME:Game over! You win!
+[2024-11-22 14:48:06] MODE_CONFIRMED:PvP
+[2024-11-22 14:48:06] Waiting for another player...
+[2024-11-22 14:48:12] GAME:Game started! You are Player 1.
+[2024-11-22 14:48:13] MODE_CONFIRMED:PvP
+[2024-11-22 14:48:13] GAME:Your turn! Enter a letter:
+[2024-11-22 14:48:13] GAME:Game started! You are Player 2.
+[2024-11-22 14:48:13] GAME:Waiting for opponent...
+[2024-11-22 14:48:16] GAME:Good guess! Current state: a____
+[2024-11-22 14:48:16] GAME:Player 1 guessed: a - a____
+[2024-11-22 14:48:16] GAME:Your turn! Enter a letter:
+[2024-11-22 14:48:16] GAME:Waiting for opponent...
+[2024-11-22 14:48:17] GAME:Good guess! Current state: app__
+[2024-11-22 14:48:17] GAME:Player 1 guessed: p - app__
+[2024-11-22 14:48:17] GAME:Your turn! Enter a letter:
+[2024-11-22 14:48:17] GAME:Waiting for opponent...
+[2024-11-22 14:48:18] GAME:Good guess! Current state: appl_
+[2024-11-22 14:48:18] GAME:Your turn! Enter a letter:
+[2024-11-22 14:48:18] GAME:Player 1 guessed: l - appl_
+[2024-11-22 14:48:18] GAME:Waiting for opponent...
+[2024-11-22 14:48:19] GAME:Congratulations! The word was: apple. Player 1 wins!
+[2024-11-22 14:48:19] GAME:Player 1 guessed: e - apple
+[2024-11-22 14:48:19] GAME:Game over! Player 1 wins!
